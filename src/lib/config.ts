@@ -8,7 +8,7 @@ export const imageBaseUrl: string = apiBase;
 /** Admin panel URL (logout redirect) */
 export const frontendUrl: string =
   process.env.REACT_APP_FRONTEND_URL || "http://38.247.134.248:3001";
-/** Zomin client frontend - QR kod orqali mijozlar shu linkga yo'naltiriladi */
+/** BEXRUZ client frontend - QR kod orqali mijozlar shu linkga yo'naltiriladi */
 export const clientUrl: string =
   process.env.REACT_APP_CLIENT_URL || "http://38.247.134.248:3010";
 
