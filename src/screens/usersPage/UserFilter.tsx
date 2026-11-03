@@ -47,7 +47,7 @@ export default function UserFilter(props: UserFilterProps) {
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h3" fontWeight={700} textAlign={"center"}>
+      <Typography component="h1" className="bx-page-title">
         {t("users.title")}
       </Typography>
 

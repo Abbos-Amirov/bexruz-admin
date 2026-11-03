@@ -1,79 +1,118 @@
-/* Sidebar Styles */
-.sidebar {
-  width: 240px;
-  height: 100vh;
-  padding: 20px 0;
-  display: flex;
-  flex-direction: column;
-  border: none;
-  background-color: #343434;
-  color: #fff;
+/* ============================================
+   SIDEBAR — doim qora, faol bo'lim qizil
+   ============================================ */
+
+.sidebar-drawer-paper {
+  width: 248px !important;
+  box-sizing: border-box !important;
+  border-right: 1px solid var(--bx-on-dark-border) !important;
+  border-radius: 0 !important;
+  background: var(--bx-black) !important;
 }
 
-[data-theme="dark"] .sidebar {
-  background-color: #1a1a1a;
-  color: #ffffff;
+.sidebar {
+  width: 248px;
+  min-height: 100%;
+  padding: 22px 14px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bx-black);
+  color: var(--bx-on-dark);
+}
+
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0 10px 22px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--bx-on-dark-border);
+}
+
+.sidebar-logo {
+  height: 30px;
+  width: auto;
 }
 
 .sidebar .sidebar-title {
-  font-size: 1.6rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 20px;
-  color: #ffffff;
+  font-family: var(--bx-font);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bx-on-dark-muted);
 }
 
 .sidebar .sidebar-list {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   flex: 1;
+  padding: 0;
 }
 
 .sidebar-list .nav-link {
-  text-decoration: none;
-  color: #cfd8dc;
+  position: relative;
   display: block;
+  text-decoration: none;
+  color: var(--bx-on-dark-muted);
 }
 
-.nav-link:hover .sidebar-button {
-  background-color: #484861;
-  color: #ffffff;
+.sidebar-list .sidebar-button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.nav-link.active .sidebar-button {
-  background-color: #3f51b5;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.nav-link.active .sidebar-item {
-  color: #ffffff;
-}
-
-.nav-link.active .sidebar-icon {
-  color: #ffffff;
+.sidebar-list .MuiListItemIcon-root {
+  min-width: 38px;
 }
 
 .sidebar .sidebar-list .sidebar-icon {
-  color: #cfd8dc;
-  margin-left: 10px;
+  margin-left: 0;
+  font-size: 21px;
+  color: var(--bx-on-dark-muted);
+  transition: color 0.2s ease;
 }
 
-.sidebar-auth-section {
-  margin-top: auto;
+.sidebar-list .sidebar-item .MuiTypography-root {
+  font-family: var(--bx-font);
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.sidebar-auth-divider {
-  border-color: rgba(255, 255, 255, 0.12);
-  margin-bottom: 0.5rem;
+.nav-link:hover .sidebar-button {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--bx-on-dark);
 }
 
-.sidebar-auth-button:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+.nav-link:hover .sidebar-icon {
+  color: var(--bx-on-dark) !important;
 }
 
-/* Drawer Paper Styles - Applied via Material-UI classes prop */
-.sidebar-drawer-paper {
-  width: 240px !important;
-  box-sizing: border-box !important;
+.nav-link.active .sidebar-button {
+  background: linear-gradient(90deg, rgba(225, 29, 46, 0.22) 0%, rgba(225, 29, 46, 0.06) 100%);
+  color: #fff;
 }
 
+.nav-link.active::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: -14px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--bx-red);
+}
+
+.nav-link.active .sidebar-item .MuiTypography-root {
+  color: #fff;
+  font-weight: 700;
+}
+
+.nav-link.active .sidebar-icon {
+  color: var(--bx-red) !important;
+}

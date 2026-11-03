@@ -140,8 +140,8 @@ export default function OrdersTable(props: OrderTableProps) {
                 <TableCell align="right">
                   <Button
                     size="small"
-                    variant="contained"
-                    color="primary"
+                    variant="outlined"
+                    color="secondary"
                     onClick={(e) => {
                       e.stopPropagation();
                       setOpen(true);

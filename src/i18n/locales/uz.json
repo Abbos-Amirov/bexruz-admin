@@ -110,7 +110,17 @@
     "create": "Yaratish",
     "update": "Yangilash",
     "clickToRemove": "O'chirish uchun bosing",
-    "clickToAdd": "Rasm qo'shish uchun bosing"
+    "clickToAdd": "Rasm qo'shish uchun bosing",
+    "statusActive": "Faol",
+    "statusPaused": "To'xtatilgan",
+    "categories": {
+      "ALL": "Barchasi",
+      "DISH": "Taomlar",
+      "DESSERT": "Desertlar",
+      "DRINK": "Ichimliklar",
+      "SALAD": "Salatlar",
+      "OTHER": "Boshqa"
+    }
   },
   "orders": {
     "title": "Buyurtmalar",

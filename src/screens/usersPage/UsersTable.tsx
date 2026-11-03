@@ -107,7 +107,8 @@ export default function UsersTable(props: UsersTableProps) {
               <TableCell align="right">
                 <Button
                   size="small"
-                  variant="contained"
+                  variant="outlined"
+                  color="secondary"
                   onClick={() => {
                     setOpen(true);
                     setEdit({

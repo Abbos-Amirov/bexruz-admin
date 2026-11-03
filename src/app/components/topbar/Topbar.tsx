@@ -1,4 +1,4 @@
-import { Box, Stack, Paper, Avatar, useTheme } from "@mui/material";
+import { Box, Stack, Avatar, useTheme } from "@mui/material";
 
 import { imageBaseUrl } from "../../../lib/config";
 import SettingsMenu from "./Settings";
@@ -19,17 +19,7 @@ export default function Topbar(props: TopbarProps) {
 
   return (
     <Box sx={{ position: "sticky", top: 0, zIndex: theme.zIndex.appBar }}>
-      <Paper
-        elevation={1}
-        sx={{
-          height: 64,
-          borderRadius: 0,
-          px: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <Box className="bx-topbar">
         {/* LEFT SECTION */}
         <TopbarLeft onMenuClick={onMenuClick} />
 
@@ -41,10 +31,11 @@ export default function Topbar(props: TopbarProps) {
           <Avatar
             alt="Profile"
             src={`${imageBaseUrl}/${authMember?.memberImage}`}
+            className="bx-topbar-avatar"
             sx={{ width: 36, height: 36, ml: 0.5 }}
           />
         </Stack>
-      </Paper>
+      </Box>
       <NotificationAlertDialog />
     </Box>
   );

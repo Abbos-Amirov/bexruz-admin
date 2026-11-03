@@ -257,7 +257,7 @@ export default function ProductDialog(props: ProductDialogProps) {
           : t("menu.editProduct")}
       </DialogTitle>
 
-      <DialogContent dividers sx={{ background: "#f8f8ff", py: 3 }}>
+      <DialogContent dividers sx={{ bgcolor: "background.default", py: 3 }}>
         <Box sx={{ maxWidth: 980, mx: "auto" }}>
           <Grid container spacing={3}>
             {/* Name */}
@@ -421,8 +421,10 @@ export default function ProductDialog(props: ProductDialogProps) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        bgcolor: "rgba(255,255,255,0.35)",
-                        boxShadow: 1,
+                        bgcolor: "background.paper",
+                        border: "1px dashed",
+                        borderColor: "divider",
+                        overflow: "hidden",
                       }}
                       title={src ? t("menu.clickToRemove") : t("menu.clickToAdd")}
                     >
@@ -439,7 +441,7 @@ export default function ProductDialog(props: ProductDialogProps) {
                         />
                       ) : (
                         <CloudUploadOutlinedIcon
-                          sx={{ fontSize: 80, color: "#b197fc" }}
+                          sx={{ fontSize: 44, color: "primary.main" }}
                         />
                       )}
                       <input

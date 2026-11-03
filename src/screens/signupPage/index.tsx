@@ -17,7 +17,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LockIcon from "@mui/icons-material/Lock";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
 import { MemberInput } from "../../lib/types/member";
 import MemberService from "../../services/Member.service";
 import { sweetErrorHandling, sweetTopSuccessAlert } from "../../lib/sweetAlert";
@@ -91,11 +90,9 @@ export default function SignupPage() {
     <Box className="login-page-container">
       <Container maxWidth="sm" className="login-container">
         <Fade in={true} timeout={800}>
-          <Paper elevation={24} className="login-paper">
+          <Paper className="login-paper">
             <Box className="login-logo-section">
-              <Box className="login-logo-icon">
-                <RestaurantIcon style={{ fontSize: 40, color: "white" }} />
-              </Box>
+              <img src="/icons/bexruz-logo.svg" alt="BEXRUZ" className="login-logo" />
               <Typography variant="h4" component="h1" className="login-title">
                 {t("auth.adminPanel")}
               </Typography>
@@ -127,7 +124,7 @@ export default function SignupPage() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <PersonIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                      <PersonIcon />
                     </InputAdornment>
                   ),
                 }}
@@ -147,7 +144,7 @@ export default function SignupPage() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <PhoneIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                      <PhoneIcon />
                     </InputAdornment>
                   ),
                 }}
@@ -168,7 +165,7 @@ export default function SignupPage() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <LockIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                      <LockIcon />
                     </InputAdornment>
                   ),
                   endAdornment: (
@@ -177,7 +174,7 @@ export default function SignupPage() {
                         aria-label="toggle password visibility"
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
-                        style={{ color: "rgba(0, 0, 0, 0.54)" }}
+                       
                       >
                         {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                       </IconButton>
@@ -201,7 +198,7 @@ export default function SignupPage() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <LockIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                      <LockIcon />
                     </InputAdornment>
                   ),
                 }}

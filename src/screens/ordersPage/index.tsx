@@ -57,7 +57,7 @@ export default function OrdersPage() {
 
   return (
     <Stack spacing={2} className="order-page">
-      <Typography variant="h3" fontWeight={700} textAlign={"center"}>
+      <Typography component="h1" className="bx-page-title">
         {t("orders.title")}
       </Typography>
 

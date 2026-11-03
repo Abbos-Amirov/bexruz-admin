@@ -1,46 +1,15 @@
-/* Table Status Monitoring System Styles */
-.table-status-card {
+/* ============================================
+   STOL HOLATI va BUYURTMALAR PANELI
+   band = qizil, tozalanishda = sariq, bo'sh = neytral
+   ============================================ */
+
+.table-status-card.MuiPaper-root,
+.table-status-card.MuiCard-root {
   width: 100%;
-  border-radius: 1rem;
-  max-height: 100%;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background: #ffffff;
-}
-
-[data-theme="dark"] .table-status-card {
-  background: #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-[data-theme="dark"] .table-status-title,
-[data-theme="dark"] .table-status-legend {
-  color: rgba(255, 255, 255, 0.87);
-}
-
-[data-theme="dark"] .table-card {
-  background: #2d2d2d;
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-[data-theme="dark"] .table-card.occupied {
-  background: linear-gradient(135deg, #3d2e1f 0%, #4a3728 100%);
-}
-
-[data-theme="dark"] .table-card.cleaning {
-  background: linear-gradient(135deg, #1e2a3a 0%, #253544 100%);
-}
-
-[data-theme="dark"] .table-card.available {
-  background: linear-gradient(135deg, #2d2d2d 0%, #1e1e1e 100%);
-}
-
-[data-theme="dark"] .table-number {
-  color: rgba(255, 255, 255, 0.9);
-}
-
-[data-theme="dark"] .table-status-label {
-  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.5rem;
+  border-radius: var(--bx-radius);
+  background: var(--bx-surface);
+  border: 1px solid var(--bx-border);
 }
 
 .table-status-header {
@@ -59,22 +28,29 @@
   margin-bottom: 1rem;
 }
 
-.table-status-avatar {
-  background-color: #ede7f6;
-  color: #5e35b1;
+.table-status-avatar.MuiAvatar-root {
   width: 36px;
   height: 36px;
+  border-radius: 10px;
+  background: var(--bx-red-soft);
+  color: var(--bx-red);
 }
 
-.table-status-title {
-  font-weight: 700;
+.table-status-title.MuiTypography-root {
+  font-weight: 800;
+  color: var(--bx-text);
 }
 
 .table-status-legend {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  color: rgba(0, 0, 0, 0.87);
+  color: var(--bx-muted);
+}
+
+.table-status-legend .MuiTypography-root {
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .table-status-legend-item {
@@ -85,22 +61,22 @@
 }
 
 .table-status-legend-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 0.25rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 .table-status-legend-dot.occupied {
-  background-color: #ffb74d;
+  background-color: var(--bx-red);
 }
 
 .table-status-legend-dot.cleaning {
-  background-color: #64b5f6;
+  background-color: var(--bx-warning);
 }
 
 .table-status-legend-dot.free {
-  background-color: #f5f5f5;
-  border: 3px solid rgba(0, 0, 0, 0.12);
+  background-color: transparent;
+  border: 2px solid var(--bx-subtle);
 }
 
 .table-status-divider {
@@ -111,13 +87,13 @@
   margin-bottom: 1rem;
 }
 
-.table-status-top-title {
-  font-weight: 700;
+.table-status-top-title.MuiTypography-root {
+  font-weight: 800;
 }
 
-.table-status-top-subtitle {
-  color: rgba(0, 0, 0, 0.65);
-  font-weight: 600;
+.table-status-top-subtitle.MuiTypography-root {
+  color: var(--bx-muted);
+  font-weight: 700;
 }
 
 .table-status-top-grid {
@@ -125,64 +101,44 @@
 }
 
 .table-top-item {
-  border-radius: 0.75rem;
+  border-radius: 12px;
   padding: 0.5rem 0.65rem;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--bx-border);
   background: transparent;
 }
 
 .table-top-number {
-  font-weight: 700;
+  font-weight: 800;
 }
 
-[data-theme="dark"] .table-status-top-subtitle {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-[data-theme="dark"] .table-top-item {
-  background: transparent;
-  border-color: rgba(255, 255, 255, 0.16);
-}
-
-/* Har bir stol uchun yashik (box) */
+/* Har bir stol uchun buyurtma yashigi */
 .table-order-box {
-  transition: all 0.25s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-[data-theme="dark"] .table-order-box {
-  background: #2d2d2d !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+.table-order-box:hover {
+  border-color: rgba(225, 29, 46, 0.5) !important;
+  box-shadow: var(--bx-shadow-lg);
 }
 
-[data-theme="dark"] .table-order-box:hover {
-  border-color: rgba(100, 181, 246, 0.6) !important;
-}
-
-/* Berildi bosilganda yashik rangi */
 .table-order-box.table-order-delivered {
-  background: rgba(237, 152, 33, 0.12) !important;
-  border-color: rgba(191, 115, 9, 0.4) !important;
+  background: var(--bx-warning-soft) !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
 }
 
-[data-theme="dark"] .table-order-box.table-order-delivered {
-  background: rgba(237, 152, 33, 0.18) !important;
-  border-color: rgba(189, 115, 11, 0.4) !important;
+.table-order-box.table-order-has-delivered {
+  border-color: rgba(245, 158, 11, 0.5) !important;
 }
 
-/* Berildi bosilganda stol yashigi dark modeda qora rangda */
-[data-theme="dark"] .table-order-box.table-order-has-delivered {
-  background: #1a1a1a !important;
-  border-color: rgba(186, 112, 9, 0.5) !important;
-}
-
+/* Ofitsiant chaqiruvlari */
 .table-call-strip {
   margin-bottom: 0.75rem;
   flex-wrap: wrap;
 }
 
-.table-call-strip-title {
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.75);
+.table-call-strip-title.MuiTypography-root {
+  font-weight: 800;
+  color: var(--bx-text);
 }
 
 .table-call-strip-list {
@@ -196,48 +152,45 @@
   align-items: center;
   gap: 0.5rem;
   min-width: auto;
-  border-radius: 999px;
-  padding: 0.35rem 0.75rem;
-  border: 1px solid rgba(244, 67, 54, 0.35);
-  background: rgba(244, 67, 54, 0.08);
+  border-radius: 999px !important;
+  padding: 0.35rem 0.85rem !important;
+  border: 1px solid rgba(225, 29, 46, 0.45) !important;
+  background: var(--bx-red-soft) !important;
+  animation: bxCallPulse 1.6s ease-in-out infinite;
 }
 
 .table-call-strip-chip:hover {
-  background: rgba(244, 67, 54, 0.14);
+  background: rgba(225, 29, 46, 0.2) !important;
 }
 
 .table-call-strip-chip-text {
   text-transform: none;
-  font-weight: 600;
-  color: #b71c1c;
+  font-weight: 800 !important;
+  color: var(--bx-red) !important;
 }
 
-[data-theme="dark"] .table-call-strip-title {
-  color: rgba(255, 255, 255, 0.85);
+@keyframes bxCallPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(225, 29, 46, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(225, 29, 46, 0);
+  }
 }
 
-[data-theme="dark"] .table-call-strip-chip {
-  border-color: rgba(239, 83, 80, 0.5);
-  background: rgba(239, 83, 80, 0.2);
-}
-
-[data-theme="dark"] .table-call-strip-chip-text {
-  color: #ff8a80;
-}
-
-/* Table Card Styles */
+/* Stol kartasi */
 .table-card {
-  width: 100%;
-  height: 180px;
-  padding: 1.25rem;
-  border-radius: 1rem;
-  border: 2px solid rgba(0, 0, 0, 0.12);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  width: 100%;
+  height: 156px;
+  padding: 1.15rem;
+  border-radius: var(--bx-radius);
+  border: 1px solid var(--bx-border);
+  background: var(--bx-surface);
   overflow: hidden;
   cursor: pointer;
-  background: #ffffff;
   box-sizing: border-box;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .table-card::before {
@@ -246,43 +199,32 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  height: 3px;
+  background: transparent;
 }
 
 .table-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-.table-card:hover::before {
-  opacity: 1;
+  transform: translateY(-3px);
+  box-shadow: var(--bx-shadow-lg);
+  border-color: var(--bx-subtle);
 }
 
 .table-card.occupied {
-  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-  border-color: #ffb74d;
+  background: linear-gradient(160deg, rgba(225, 29, 46, 0.14) 0%, var(--bx-surface) 70%);
+  border-color: rgba(225, 29, 46, 0.4);
 }
 
 .table-card.occupied::before {
-  background: linear-gradient(90deg, transparent, rgba(255, 183, 77, 0.3), transparent);
+  background: var(--bx-red);
 }
 
 .table-card.cleaning {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  border-color: #64b5f6;
+  background: linear-gradient(160deg, rgba(245, 158, 11, 0.14) 0%, var(--bx-surface) 70%);
+  border-color: rgba(245, 158, 11, 0.4);
 }
 
 .table-card.cleaning::before {
-  background: linear-gradient(90deg, transparent, rgba(100, 181, 246, 0.3), transparent);
-}
-
-.table-card.available {
-  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
-  border-color: rgba(0, 0, 0, 0.12);
+  background: var(--bx-warning);
 }
 
 .table-card-content {
@@ -300,41 +242,36 @@
   flex: 1;
 }
 
-.table-number {
-  font-weight: 700;
-  font-size: 2rem;
-  line-height: 1.2;
-  color: #1a1a1a;
-  letter-spacing: -0.02em;
+.table-card .table-number {
+  font-family: var(--bx-font);
+  font-weight: 800;
+  font-size: 2.25rem;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--bx-text);
 }
 
-.table-status-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
+.table-card .table-status-label {
   display: inline-block;
   width: fit-content;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
+  padding: 0.2rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--bx-surface-2);
+  color: var(--bx-muted);
 }
 
 .table-card.occupied .table-status-label {
-  background: rgba(255, 183, 77, 0.2);
-  color: #e65100;
+  background: var(--bx-red-soft);
+  color: var(--bx-red);
 }
 
 .table-card.cleaning .table-status-label {
-  background: rgba(100, 181, 246, 0.2);
-  color: #1565c0;
-}
-
-.table-card.available .table-status-label {
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.6);
+  background: var(--bx-warning-soft);
+  color: var(--bx-warning);
 }
 
 .table-card-right {
@@ -348,44 +285,37 @@
   padding: 0.5rem;
   min-width: auto;
   border-radius: 50%;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .table-notification-button:hover {
-  background-color: rgba(244, 67, 54, 0.1);
-  transform: scale(1.1);
+  background-color: var(--bx-red-soft);
+  transform: scale(1.08);
 }
 
-.table-icon-avatar {
-  width: 56px;
-  height: 56px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+.table-card .table-icon-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--bx-surface-2);
+  color: var(--bx-muted);
+  transition: transform 0.2s ease;
 }
 
 .table-card:hover .table-icon-avatar {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: scale(1.06);
 }
 
 .table-card.occupied .table-icon-avatar {
-  background: rgba(255, 183, 77, 0.2);
-  color: #e65100;
+  background: var(--bx-red-soft);
+  color: var(--bx-red);
 }
 
 .table-card.cleaning .table-icon-avatar {
-  background: rgba(100, 181, 246, 0.2);
-  color: #1565c0;
+  background: var(--bx-warning-soft);
+  color: var(--bx-warning);
 }
 
-.table-card.available .table-icon-avatar {
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.6);
-}
-
-/* Responsive Design */
 @media (max-width: 600px) {
   .table-status-header {
     flex-direction: column;
@@ -399,30 +329,16 @@
   }
 
   .table-card {
-    height: 160px;
+    height: 140px;
     padding: 1rem;
   }
 
-  .table-number {
-    font-size: 1.75rem;
+  .table-card .table-number {
+    font-size: 1.9rem;
   }
 }
 
-/* Animation for table status changes */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-.table-card.occupied {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* Grid spacing */
+/* Grid */
 .table-status-grid {
   width: 100%;
   margin: 0 !important;
@@ -449,4 +365,3 @@
     gap: 0.75rem;
   }
 }
-

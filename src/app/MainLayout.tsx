@@ -4,7 +4,7 @@ import Topbar from "./components/topbar/Topbar";
 import { Box, Stack, useTheme } from "@mui/material";
 import "../css/mainLayout.css";
 
-const drawerWidth = 240;
+const drawerWidth = 248;
 const TOPBAR_HEIGHT = 64; // keep in sync with Topbar
 
 const MainLayout = ({ children }: PropsWithChildren) => {

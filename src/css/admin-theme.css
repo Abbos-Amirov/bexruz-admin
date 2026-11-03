@@ -1,0 +1,161 @@
+/* ============================================
+   BEXRUZ admin design tokens
+   data-theme="dark" (sukut) va "light"; sidebar ikkalasida ham qora.
+   ============================================ */
+
+:root {
+  --bx-font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bx-font-display: "Playfair Display", Georgia, serif;
+
+  --bx-red: #e11d2e;
+  --bx-red-hover: #c3101f;
+  --bx-red-soft: rgba(225, 29, 46, 0.12);
+  --bx-red-glow: rgba(225, 29, 46, 0.32);
+
+  --bx-black: #0a0a0b;
+  --bx-on-dark: #f5f5f4;
+  --bx-on-dark-muted: #a1a1aa;
+  --bx-on-dark-border: rgba(255, 255, 255, 0.08);
+
+  --bx-success: #16a34a;
+  --bx-success-soft: rgba(22, 163, 74, 0.14);
+  --bx-warning: #f59e0b;
+  --bx-warning-soft: rgba(245, 158, 11, 0.14);
+  --bx-info: #71717a;
+  --bx-info-soft: rgba(113, 113, 122, 0.16);
+
+  --bx-radius-sm: 10px;
+  --bx-radius: 16px;
+  --bx-radius-lg: 20px;
+
+  /* light */
+  --bx-bg: #f4f3f1;
+  --bx-surface: #ffffff;
+  --bx-surface-2: #efedea;
+  --bx-border: rgba(10, 10, 11, 0.08);
+  --bx-text: #0a0a0b;
+  --bx-muted: #5b5b63;
+  --bx-subtle: #8b8b93;
+  --bx-shadow-lg: 0 12px 40px rgba(10, 10, 11, 0.12);
+}
+
+[data-theme="dark"] {
+  --bx-bg: #0a0a0b;
+  --bx-surface: #141416;
+  --bx-surface-2: #1d1d21;
+  --bx-border: rgba(255, 255, 255, 0.08);
+  --bx-text: #f5f5f4;
+  --bx-muted: #a1a1aa;
+  --bx-subtle: #71717a;
+  --bx-shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--bx-bg);
+  color: var(--bx-text);
+}
+
+::selection {
+  background: var(--bx-red);
+  color: #fff;
+}
+
+/* Sahifa sarlavhasi (har bir ekran tepasida) */
+.bx-page-title {
+  margin: 4px 0 20px !important;
+  font-family: var(--bx-font) !important;
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--bx-text) !important;
+  text-align: left !important;
+}
+
+/* Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bx-border) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--bx-border);
+  border-radius: 8px;
+}
+
+/* SweetAlert2 */
+body .swal2-popup {
+  font-family: var(--bx-font);
+  background: var(--bx-surface);
+  color: var(--bx-text);
+  border: 1px solid var(--bx-border);
+  border-radius: var(--bx-radius-lg);
+}
+
+body .swal2-title,
+body .swal2-html-container {
+  color: var(--bx-text);
+}
+
+body .swal2-styled.swal2-confirm {
+  background: var(--bx-red);
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+body .swal2-styled.swal2-cancel,
+body .swal2-styled.swal2-deny {
+  background: var(--bx-surface-2);
+  color: var(--bx-text);
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+body .swal2-styled:focus {
+  box-shadow: 0 0 0 3px var(--bx-red-soft);
+}
+
+/* Jadval va kartalardagi holat chiplari — yengil (soft) uslub */
+.MuiTableCell-root .MuiChip-filled,
+.bx-soft-chips .MuiChip-filled {
+  border: 1px solid transparent;
+}
+
+.MuiTableCell-root .MuiChip-filledSuccess,
+.bx-soft-chips .MuiChip-filledSuccess {
+  background: var(--bx-success-soft);
+  color: var(--bx-success);
+}
+
+.MuiTableCell-root .MuiChip-filledWarning,
+.bx-soft-chips .MuiChip-filledWarning {
+  background: var(--bx-warning-soft);
+  color: var(--bx-warning);
+}
+
+.MuiTableCell-root .MuiChip-filledError,
+.MuiTableCell-root .MuiChip-filledPrimary,
+.bx-soft-chips .MuiChip-filledError,
+.bx-soft-chips .MuiChip-filledPrimary {
+  background: var(--bx-red-soft);
+  color: var(--bx-red);
+}
+
+.MuiTableCell-root .MuiChip-filledInfo,
+.MuiTableCell-root .MuiChip-filledSecondary,
+.MuiTableCell-root .MuiChip-filledDefault,
+.bx-soft-chips .MuiChip-filledInfo,
+.bx-soft-chips .MuiChip-filledSecondary {
+  background: var(--bx-surface-2);
+  color: var(--bx-text);
+}
+
+.MuiTableCell-root .MuiChip-filled .MuiChip-icon {
+  color: inherit;
+}

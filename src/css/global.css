@@ -1,9 +1,13 @@
 /* Global Styles */
-* {
-  font-family: 'Poppins', sans-serif;
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--bx-font);
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-

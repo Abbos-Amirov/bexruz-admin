@@ -277,7 +277,7 @@ export default function AllTablesOrdersDetailPage() {
                         <Box
                           key={order.orderId}
                           sx={{
-                            border: "1px solid rgba(0,0,0,0.08)",
+                            border: 1, borderColor: "divider",
                             borderRadius: 1.25,
                             p: 1.25,
                           }}
@@ -313,7 +313,7 @@ export default function AllTablesOrdersDetailPage() {
                                       height: 30,
                                       borderRadius: 0.75,
                                       objectFit: "cover",
-                                      bgcolor: "rgba(0,0,0,0.04)",
+                                      bgcolor: "action.hover",
                                     }}
                                   />
                                   <Typography

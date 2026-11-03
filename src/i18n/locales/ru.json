@@ -110,7 +110,17 @@
     "create": "Создать",
     "update": "Обновить",
     "clickToRemove": "Нажмите для удаления",
-    "clickToAdd": "Нажмите для добавления"
+    "clickToAdd": "Нажмите для добавления",
+    "statusActive": "Активно",
+    "statusPaused": "Приостановлено",
+    "categories": {
+      "ALL": "Все",
+      "DISH": "Блюда",
+      "DESSERT": "Десерты",
+      "DRINK": "Напитки",
+      "SALAD": "Салаты",
+      "OTHER": "Другое"
+    }
   },
   "orders": {
     "title": "Заказы",

@@ -7,6 +7,7 @@ import { store } from "./app/store";
 import reportWebVitals from "./reportWebVitals";
 import ContextProvider from "./app/context/ContextProvider";
 import ThemeWrapper from "./app/ThemeWrapper";
+import "./css/admin-theme.css";
 import "./css/global.css";
 
 const container = document.getElementById("root")!;

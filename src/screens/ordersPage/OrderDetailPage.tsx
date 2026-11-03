@@ -224,7 +224,7 @@ export default function OrderDetailPage() {
                   alignItems="center"
                   sx={{
                     p: 1,
-                    border: "1px solid rgba(0,0,0,0.08)",
+                    border: 1, borderColor: "divider",
                     borderRadius: 1,
                   }}
                 >
@@ -241,7 +241,7 @@ export default function OrderDetailPage() {
                         height: 40,
                         borderRadius: 1,
                         objectFit: "cover",
-                        bgcolor: "rgba(0,0,0,0.04)",
+                        bgcolor: "action.hover",
                       }}
                     />
                     <Typography>{p.productName}</Typography>

@@ -17,7 +17,6 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-import "../../../css/navbar.css";
 import "../../../css/sidebar.css";
 
 interface SidebarProps {
@@ -64,7 +63,10 @@ const Sidebar = ({ mobileOpen, onClose }: SidebarProps) => {
 
   const drawerContent = (
     <Box className="sidebar">
-      <Box className="sidebar-title">{t("sidebar.adminPanel")}</Box>
+      <Box className="sidebar-brand">
+        <img src="/icons/bexruz-logo.svg" alt="BEXRUZ" className="sidebar-logo" />
+        <span className="sidebar-title">{t("sidebar.adminPanel")}</span>
+      </Box>
       <List className="sidebar-list">
         {navItems.map((item) => (
           <NavLink

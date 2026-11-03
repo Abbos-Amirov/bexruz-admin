@@ -156,8 +156,8 @@ export default function CompletedOrdersStatsPage() {
   }
 
   return (
-    <Box sx={{ p: 2, maxWidth: 1200, mx: "auto" }}>
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+    <Box>
+      <Typography component="h1" className="bx-page-title">
         {t("completedOrders.title")}
       </Typography>
 

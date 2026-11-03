@@ -20,28 +20,21 @@ export default function QuickActions() {
 
   const addTableHandler = () => navigate("/tables");
   return (
-    <Stack
-      flexDirection={"row"}
-      margin={"40px"}
-      justifyContent={"end"}
-      padding={"10px"}
-      gap={"30px"}
-    >
+    <Stack direction="row" spacing={1.5}>
+      <Button
+        startIcon={<TableRestaurantIcon />}
+        variant="outlined"
+        color="secondary"
+        onClick={addTableHandler}
+      >
+        {t("dashboard.addTable")}
+      </Button>
       <Button
         startIcon={<AddRoundedIcon />}
         variant="contained"
         onClick={newOrderHandler}
-        size="large"
       >
         {t("dashboard.newOrder")}
-      </Button>
-      <Button
-        startIcon={<TableRestaurantIcon />}
-        variant="contained"
-        onClick={addTableHandler}
-        size="large"
-      >
-        {t("dashboard.addTable")}
       </Button>
     </Stack>
   );

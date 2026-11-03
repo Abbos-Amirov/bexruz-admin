@@ -8,6 +8,8 @@ import { Table, TableInquiry } from "../../lib/types/table";
 import { ProductsStat } from "../../lib/types/product";
 import { Dispatch } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Box, Stack, Typography } from "@mui/material";
 import OrderService from "../../services/Order.service";
 import ProductService from "../../services/Product.service";
 import TableService from "../../services/Table.service";
@@ -23,6 +25,7 @@ export default function DashboardPage() {
   const { setOrderStatis, setTableStatus, setProductStatus } = actionDispatch(
     useDispatch()
   );
+  const { t } = useTranslation();
   const [inquiry, setInquiry] = useState<TableInquiry>({
     limit: 1000,
     page: 1,
@@ -50,10 +53,23 @@ export default function DashboardPage() {
       .catch((err) => console.warn("getAllTables:", err));
   }, [inquiry]);
   return (
-    <>
-      <DashboardOverview />
+    <Stack spacing={3}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        spacing={2}
+      >
+        <Typography component="h1" className="bx-page-title" sx={{ mb: "0 !important" }}>
+          {t("dashboard.overview")}
+        </Typography>
+        <QuickActions />
+      </Stack>
+      {/* Box: Stack margin reset Grid manfiy marginini buzmasligi uchun */}
+      <Box>
+        <DashboardOverview />
+      </Box>
       <TopItemAndCategory />
-      <QuickActions />
-    </>
+    </Stack>
   );
 }

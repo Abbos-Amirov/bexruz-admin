@@ -65,7 +65,7 @@ const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   });
 
   const [darkMode, setDarkMode] = useState<boolean>(() =>
-    safeParse<boolean>(localStorage.getItem("darkMode"), false)
+    safeParse<boolean>(localStorage.getItem("darkMode"), true)
   );
 
   const [notificationAlert, setNotificationAlert] = useState<Notification | null>(null);

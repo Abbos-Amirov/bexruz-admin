@@ -61,8 +61,8 @@ export default function TableFilter(props: TableFilterProps) {
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" alignItems="center" justifyContent="center">
-        <Typography variant="h3" fontWeight={700} margin={"10px"}>
+      <Stack direction="row" alignItems="center">
+        <Typography component="h1" className="bx-page-title">
           {t("tables.title")}
         </Typography>
       </Stack>

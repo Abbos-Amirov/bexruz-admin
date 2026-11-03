@@ -1,10 +1,11 @@
-/* Main Layout Styles - background handled by theme */
+/* Main Layout */
 .main-layout-container {
   min-height: 100vh;
 }
 
 .main-layout-content {
   flex: 1;
+  min-width: 0;
   margin-left: 0;
   display: flex;
   flex-direction: column;
@@ -12,19 +13,76 @@
 
 @media (min-width: 900px) {
   .main-layout-content {
-    margin-left: 240px;
+    margin-left: 248px;
   }
 }
 
 .main-layout-page-content {
-  padding: 0.5rem 1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
 }
 
 @media (min-width: 600px) {
   .main-layout-page-content {
-    padding: 1rem 2rem;
+    padding: 28px 32px 48px;
   }
 }
 
+/* Topbar */
+.bx-topbar {
+  height: 68px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: color-mix(in srgb, var(--bx-bg) 82%, transparent);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--bx-border);
+}
+
+@media (min-width: 600px) {
+  .bx-topbar {
+    padding: 0 32px;
+  }
+}
+
+.bx-topbar .MuiIconButton-root {
+  width: 40px;
+  height: 40px;
+  color: var(--bx-muted);
+  border: 1px solid transparent;
+}
+
+.bx-topbar .MuiIconButton-root:hover {
+  color: var(--bx-text);
+  background: var(--bx-surface);
+  border-color: var(--bx-border);
+}
+
+.bx-topbar-search {
+  flex: 1;
+  max-width: 520px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--bx-surface);
+  border: 1px solid var(--bx-border);
+  color: var(--bx-subtle);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bx-topbar-search:focus-within {
+  border-color: var(--bx-red);
+  box-shadow: 0 0 0 4px var(--bx-red-soft);
+}
+
+.bx-topbar-avatar {
+  border: 2px solid var(--bx-red);
+}

@@ -18,6 +18,7 @@ import TodayIcon from "@mui/icons-material/Today";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import OrderService from "../../services/Order.service";
 import { Order } from "../../lib/types/order";
+import "../../css/dashboardPage.css";
 
 type SalesPeriod = "all" | "year" | "month" | "week" | "today7";
 
@@ -92,47 +93,42 @@ export default function SalesStatsPage() {
     fetchOrders();
   }, [fetchOrders]);
 
-  const cards: { period: SalesPeriod; labelKey: string; icon: React.ReactNode; iconBg: string; iconColor: string }[] = [
+  const cards: { period: SalesPeriod; labelKey: string; icon: React.ReactNode; tone: "red" | "neutral" }[] = [
     {
       period: "all",
       labelKey: "sales.totalSales",
       icon: <TrendingUpIcon />,
-      iconBg: "#e3f2fd",
-      iconColor: "#1565c0",
+      tone: "red",
     },
     {
       period: "year",
       labelKey: "sales.lastYear",
       icon: <CalendarMonthIcon />,
-      iconBg: "#e8f5e9",
-      iconColor: "#2e7d32",
+      tone: "neutral",
     },
     {
       period: "month",
       labelKey: "sales.lastMonth",
       icon: <DateRangeIcon />,
-      iconBg: "#fff3e0",
-      iconColor: "#e65100",
+      tone: "neutral",
     },
     {
       period: "week",
       labelKey: "sales.lastWeek",
       icon: <TodayIcon />,
-      iconBg: "#f3e5f5",
-      iconColor: "#7b1fa2",
+      tone: "neutral",
     },
     {
       period: "today7",
       labelKey: "sales.todayAfter7",
       icon: <AccessTimeIcon />,
-      iconBg: "#e0f7fa",
-      iconColor: "#00838f",
+      tone: "neutral",
     },
   ];
 
   return (
-    <Box sx={{ p: 2, maxWidth: 1200, mx: "auto" }}>
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+    <Box>
+      <Typography component="h1" className="bx-page-title">
         {t("sales.title")}
       </Typography>
 
@@ -146,18 +142,14 @@ export default function SalesStatsPage() {
             const value = sumByPeriod(orders, c.period);
             return (
               <Grid item xs={12} sm={6} md={4} key={c.period}>
-                <Paper elevation={2} sx={{ p: 2, borderRadius: 2, height: "100%" }}>
-                  <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Avatar sx={{ bgcolor: c.iconBg, color: c.iconColor }}>{c.icon}</Avatar>
-                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                        {t(c.labelKey)}
-                      </Typography>
-                    </Stack>
-                    <Typography variant="h5" sx={{ fontWeight: 700, color: "#2e7d32" }}>
-                      ₩{Number(value).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                    </Typography>
+                <Paper className={`kpi-item kpi-tone-${c.tone}`}>
+                  <Stack direction="row" spacing={1.25} alignItems="center" className="kpi-item-head">
+                    <Avatar variant="rounded" className="kpi-item-avatar">{c.icon}</Avatar>
+                    <Typography className="kpi-item-label">{t(c.labelKey)}</Typography>
                   </Stack>
+                  <Typography className="kpi-item-value">
+                    ₩{Number(value).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </Typography>
                 </Paper>
               </Grid>
             );

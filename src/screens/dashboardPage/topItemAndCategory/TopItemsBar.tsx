@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Card, CardContent, Typography, Divider } from "@mui/material";
+import { Card, CardContent, Typography, useTheme } from "@mui/material";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,6 +13,7 @@ import {
 import { createSelector } from "@reduxjs/toolkit";
 import { retrieveOrderStatis } from "../selector";
 import { useSelector } from "react-redux";
+import { BX_RED, chartColors } from "../../../lib/chartTheme";
 
 /** REDUX SLICE & SELECTOR */
 const orderStatisRetriever = createSelector(
@@ -34,23 +35,12 @@ export default function TopItemsBar() {
   const labels = allLabels?.slice(0, 6);
   const values = allValues?.slice(0, 6);
 
-  const bgColors = [
-    "#42A5F5",
-    "#FF7043",
-    "#66BB6A",
-    "#AB47BC",
-    "#26C6DA",
-    "#FFA726",
-  ];
-
-  const borderColors = [
-    "#1E88E5",
-    "#F4511E",
-    "#2E7D32",
-    "#8E24AA",
-    "#00838F",
-    "#EF6C00",
-  ];
+  const theme = useTheme();
+  const c = chartColors(theme);
+  // Eng ko'p sotilgan — to'liq qizil, qolganlari bosiqroq
+  const bgColors = (values ?? []).map((_, i) =>
+    i === 0 ? BX_RED : "rgba(225, 29, 46, 0.38)"
+  );
 
   const data = {
     labels,
@@ -59,9 +49,9 @@ export default function TopItemsBar() {
         label: "Orders (this week)",
         data: values,
         backgroundColor: bgColors,
-        borderColor: borderColors,
+        hoverBackgroundColor: BX_RED,
         borderWidth: 0,
-        borderRadius: 8,
+        borderRadius: 10,
         maxBarThickness: 48,
       },
     ],
@@ -79,19 +69,27 @@ export default function TopItemsBar() {
       },
     },
     scales: {
-      x: { grid: { display: false } },
-      y: { beginAtZero: true, ticks: { stepSize: 20 } },
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: { color: c.text, font: c.font },
+      },
+      y: {
+        beginAtZero: true,
+        border: { display: false },
+        grid: { color: c.grid },
+        ticks: { color: c.text, font: c.font, precision: 0 },
+      },
     },
   };
 
   return (
-    <Card sx={{ borderRadius: 3, height: 360 }}>
+    <Card className="bx-chart-card">
       <CardContent sx={{ height: 1 }}>
-        <Typography variant="h4" fontWeight={"700"} sx={{ mb: 1 }}>
+        <Typography className="bx-card-title">
           {t("dashboard.topSellingItems")}
         </Typography>
-        <Divider sx={{ mb: 2 }} />
-        <div style={{ height: 260 }}>
+        <div style={{ height: 270 }}>
           <Bar data={data} options={options} />
         </div>
       </CardContent>

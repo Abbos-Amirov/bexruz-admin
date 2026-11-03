@@ -110,7 +110,17 @@
     "create": "Create",
     "update": "Update",
     "clickToRemove": "Click to remove",
-    "clickToAdd": "Click to add image"
+    "clickToAdd": "Click to add image",
+    "statusActive": "Active",
+    "statusPaused": "Paused",
+    "categories": {
+      "ALL": "All",
+      "DISH": "Dishes",
+      "DESSERT": "Desserts",
+      "DRINK": "Drinks",
+      "SALAD": "Salads",
+      "OTHER": "Other"
+    }
   },
   "orders": {
     "title": "Orders",

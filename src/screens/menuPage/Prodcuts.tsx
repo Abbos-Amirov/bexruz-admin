@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Box, Button, Container, IconButton, Stack } from "@mui/material";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import { Box, Button, IconButton, Paper, Stack, Typography } from "@mui/material";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -59,283 +59,217 @@ export default function ProductsPage(props: ProdcutsPageProps) {
   } = props;
   const { products } = useSelector(productsRetriever);
 
+  const categories = [
+    ProductCollection.ALL,
+    ProductCollection.DISH,
+    ProductCollection.DESSERT,
+    ProductCollection.DRINK,
+    ProductCollection.SALAD,
+    ProductCollection.OTHER,
+  ];
+  const sorts = [
+    { key: "createdAt", label: t("menu.new") },
+    { key: "productPrice", label: t("menu.price") },
+    { key: "productViews", label: t("menu.views") },
+  ];
+
   return (
-    <div className="products-page">
-      <div className="products">
-        <Container>
-          <Stack flexDirection={"column"} alignItems={"center"} mt="15px">
-            <Stack
-              flexDirection={"row"}
-              justifyContent={"right"}
-              alignItems={"center"}
-              width={"100%"}
+    <div className="admin-products-page">
+      {/* Header */}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        spacing={2}
+        className="admin-products-header"
+      >
+        <Typography component="h1" className="bx-page-title" sx={{ mb: "0 !important" }}>
+          {t("menu.menuItems")}
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddRoundedIcon />}
+          onClick={() => {
+            setMode(ProductDialogMode.CREATE);
+            setOpen(true);
+          }}
+        >
+          {t("menu.addNewProduct")}
+        </Button>
+      </Stack>
+
+      {/* Toolbar: qidiruv, kategoriya, saralash */}
+      <Paper className="admin-products-toolbar">
+        <Box className="admin-products-search">
+          <input
+            type="search"
+            name="singleResearch"
+            placeholder={t("users.typeHere")}
+            className="search-input"
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") searchProductHandler();
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            className="search-input-btn"
+            endIcon={<SearchIcon />}
+            onClick={searchProductHandler}
+          >
+            {t("menu.search")}
+          </Button>
+        </Box>
+
+        <Box className="admin-products-chips">
+          {categories.map((item) => (
+            <button
+              type="button"
+              key={item}
+              className={`bx-chip${productSearch.productCollection === item ? " active" : ""}`}
+              onClick={() => searchCollectionHandler(item)}
             >
-              <Stack className="avatar-big-box">
-                <Box display={"flex"} flexDirection={"row"}>
-                  <input
-                    type="search"
-                    name="singleResearch"
-                    placeholder={t("users.typeHere")}
-                    className="search-input"
-                    onChange={(e) => {
-                      setSearchText(e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") searchProductHandler();
-                    }}
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className="search-input-btn"
-                    endIcon={<SearchIcon />}
-                    onClick={searchProductHandler}
-                  >
-                    {t("menu.search")}
-                  </Button>
-                  <Box className="top-text">{t("menu.menuItems")}</Box>
-                </Box>
+              {t(`menu.categories.${item}`, item)}
+            </button>
+          ))}
+        </Box>
 
-                <Box>
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    onClick={() => {
-                      setMode(ProductDialogMode.CREATE);
-                      setOpen(true);
-                    }}
-                  >
-                    + {t("menu.addNewProduct")}
-                  </Button>
-                </Box>
-              </Stack>
-            </Stack>
-            <Stack className="dishes-filter-section">
-              <Button
-                variant={"contained"}
-                color={
-                  productSearch.order === "createdAt" ? "primary" : "secondary"
-                }
-                className={"order"}
-                onClick={() => searchOrderHandler("createdAt")}
-              >
-                {t("menu.new")}
-              </Button>
-              <Button
-                variant={"contained"}
-                color={
-                  productSearch.order === "productPrice"
-                    ? "primary"
-                    : "secondary"
-                }
-                className={"order"}
-                onClick={() => searchOrderHandler("productPrice")}
-              >
-                {t("menu.price")}
-              </Button>
-              <Button
-                variant={"contained"}
-                color={
-                  productSearch.order === "productViews"
-                    ? "primary"
-                    : "secondary"
-                }
-                className={"order"}
-                sx={{ marginRight: "56px" }}
-                onClick={() => searchOrderHandler("productViews")}
-              >
-                {t("menu.views")}
-              </Button>
-            </Stack>
-            <Stack className="list-category-section">
-              <Stack className="product-category">
-                {[
-                  ProductCollection.ALL,
-                  ProductCollection.DISH,
-                  ProductCollection.DESSERT,
-                  ProductCollection.DRINK,
-                  ProductCollection.SALAD,
-                  ProductCollection.OTHER,
-                ].map((item, i) => (
-                  <Button
-                    key={i}
-                    variant={"contained"}
-                    color={
-                      productSearch.productCollection === item
-                        ? "primary"
-                        : "secondary"
-                    }
-                    className="order"
-                    sx={{ marginTop: item === "ALL" ? "25px" : "10px" }}
-                    onClick={() => searchCollectionHandler(item)}
-                  >
-                    {item}
-                  </Button>
-                ))}
-              </Stack>
-              <Stack className="product-wrapper">
-                {products.length !== 0 ? (
-                  products.map((product: Product) => {
-                    const firstImage = Array.isArray(product.productImages)
-                      ? product.productImages.find(
-                          (img) => typeof img === "string" && img.trim() !== ""
-                        ) ?? ""
-                      : "";
-                    const imagePath = firstImage
-                      ? firstImage.startsWith("http://") || firstImage.startsWith("https://")
-                        ? firstImage
-                        : `${imageBaseUrl}/${firstImage}`.replace(/([^:]\/)\/+/g, "$1")
-                      : "";
-                    const sizeVolume =
-                      product.productCollection === ProductCollection.DRINK
-                        ? (product.productVolume ?? 0) + " litre"
-                        : (product.productSize ?? "NORMAL") + " size";
-                    const productStat = product.productStatus;
-                    return (
-                      <Stack key={product._id} className="product-card">
-                        <Stack
-                          className="product-img"
-                          sx={{ backgroundImage: `url(${imagePath})` }}
-                        >
-                          <div className="product-sale">{sizeVolume}</div>
-                        </Stack>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "space-between",
-                          }}
-                        >
-                          <Box className="product-desc">
-                            <span className="product-title">
-                              {product.productName}
-                            </span>
-                            <div className="product-desc">
-                              <MonetizationOnIcon sx={{ width: "20px" }} />
-                              {product.productPrice}
-                            </div>
-                          </Box>
-                          <Box
-                            className="status"
-                            sx={{
-                              bgcolor:
-                                productStat === ProductStatus.PROCESS
-                                  ? "rgb(191, 213, 191)"
-                                  : "rgba(235, 192, 199, 0.894)",
-                              color:
-                                productStat === ProductStatus.PROCESS
-                                  ? "rgb(3, 153, 3)"
-                                  : "rgb(245, 84, 84)",
-                            }}
-                          >
-                            {productStat}
-                          </Box>
-                        </Box>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            width: "100%",
-                            mt: 1,
-                          }}
-                        >
-                          {/* Left side: Edit + Delete */}
-                          <Box sx={{ display: "flex", gap: 1 }}>
-                            <IconButton
-                              size="small"
-                              color="primary"
-                              onClick={() => {
-                                setMode(ProductDialogMode.EDIT);
-                                setEdit(product);
-                                setOpen(true);
-                              }}
-                              sx={{ ml: 2 }}
-                            >
-                              <EditIcon fontSize="medium" />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              sx={{ color: "error.main" }}
-                              onClick={() =>
-                                productDeleteHandler({
-                                  _id: product._id,
-                                  productStatus: ProductStatus.DELETE,
-                                  productName: product.productName,
-                                })
-                              }
-                            >
-                              <DeleteIcon fontSize="medium" />
-                            </IconButton>
-                          </Box>
+        <Box className="admin-products-sorts">
+          {sorts.map((sort) => (
+            <button
+              type="button"
+              key={sort.key}
+              className={`bx-sort${productSearch.order === sort.key ? " active" : ""}`}
+              onClick={() => searchOrderHandler(sort.key)}
+            >
+              {sort.label}
+            </button>
+          ))}
+        </Box>
+      </Paper>
 
-                          {/* Right side: Mark Available / Unavailable */}
-                          <Button
-                            variant="contained"
-                            size="small"
-                            sx={{
-                              bgcolor:
-                              productStat === ProductStatus.PAUSE
-                                  ? "success.main"
-                                  : "error.main",
-                              "&:hover": {
-                                bgcolor:
-                                productStat === ProductStatus.PAUSE
-                                    ? "success.dark"
-                                    : "error.dark",
-                              },
-                              textTransform: "none",
-                              color: "#f8f8ff",
-                            }}
-                            onClick={() =>
-                              productUpdateHandler({
-                                _id: product._id,
-                                productStatus:
-                                  productStat === ProductStatus.PROCESS
-                                    ? ProductStatus.PAUSE
-                                    : ProductStatus.PROCESS,
-                                existingImages: product.productImages,
-                              })
-                            }
-                          >
-                             {productStat === ProductStatus.PAUSE
-                              ? t("menu.setProcess")
-                              : t("menu.setPause")}
-                          </Button>
-                        </Box>
-                      </Stack>
-                    );
-                  })
-                ) : (
-                  <Box className="no-data">{t("menu.productsNotAvailable")}</Box>
-                )}
-              </Stack>
-            </Stack>
-            <Stack className="pagination-section">
-              <Stack spacing={2}>
-                <Pagination
-                  count={
-                    products.length !== 0
-                      ? productSearch.page + 1
-                      : productSearch.page
-                  }
-                  page={productSearch.page}
-                  renderItem={(item) => (
-                    <PaginationItem
-                      slots={{
-                        previous: ArrowBackIcon,
-                        next: ArrowForwardIcon,
+      {/* Products grid */}
+      {products.length !== 0 ? (
+        <Box className="admin-products-grid">
+          {products.map((product: Product) => {
+            const firstImage = Array.isArray(product.productImages)
+              ? product.productImages.find(
+                  (img) => typeof img === "string" && img.trim() !== ""
+                ) ?? ""
+              : "";
+            const imagePath = firstImage
+              ? firstImage.startsWith("http://") || firstImage.startsWith("https://")
+                ? firstImage
+                : `${imageBaseUrl}/${firstImage}`.replace(/([^:]\/)\/+/g, "$1")
+              : "";
+            const sizeVolume =
+              product.productCollection === ProductCollection.DRINK
+                ? (product.productVolume ?? 0) + " L"
+                : product.productSize ?? "NORMAL";
+            const productStat = product.productStatus;
+            const isActive = productStat === ProductStatus.PROCESS;
+            return (
+              <Paper
+                key={product._id}
+                className={`admin-product-card${isActive ? "" : " is-paused"}`}
+              >
+                <Box
+                  className="admin-product-img"
+                  sx={{ backgroundImage: imagePath ? `url(${imagePath})` : "none" }}
+                >
+                  <span className="admin-product-size">{sizeVolume}</span>
+                  <span className={`admin-product-status${isActive ? " active" : ""}`}>
+                    {isActive ? t("menu.statusActive") : t("menu.statusPaused")}
+                  </span>
+                </Box>
+                <Box className="admin-product-body">
+                  <Typography className="admin-product-name" title={product.productName}>
+                    {product.productName}
+                  </Typography>
+                  <Typography className="admin-product-price">
+                    ₩{Number(product.productPrice ?? 0).toLocaleString("en-US")}
+                  </Typography>
+                </Box>
+                <Box className="admin-product-actions">
+                  <Box sx={{ display: "flex", gap: 0.5 }}>
+                    <IconButton
+                      size="small"
+                      aria-label="edit"
+                      className="admin-product-icon"
+                      onClick={() => {
+                        setMode(ProductDialogMode.EDIT);
+                        setEdit(product);
+                        setOpen(true);
                       }}
-                      {...item}
-                      color={"secondary"}
-                    />
-                  )}
-                  onChange={paginationHandler}
-                />
-              </Stack>
-            </Stack>
-          </Stack>
-        </Container>
-      </div>
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      aria-label="delete"
+                      className="admin-product-icon danger"
+                      onClick={() =>
+                        productDeleteHandler({
+                          _id: product._id,
+                          productStatus: ProductStatus.DELETE,
+                          productName: product.productName,
+                        })
+                      }
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+
+                  {/* Mark Available / Unavailable */}
+                  <Button
+                    variant={isActive ? "outlined" : "contained"}
+                    color={isActive ? "secondary" : "success"}
+                    size="small"
+                    className="admin-product-toggle"
+                    onClick={() =>
+                      productUpdateHandler({
+                        _id: product._id,
+                        productStatus: isActive
+                          ? ProductStatus.PAUSE
+                          : ProductStatus.PROCESS,
+                        existingImages: product.productImages,
+                      })
+                    }
+                  >
+                    {isActive ? t("menu.setPause") : t("menu.setProcess")}
+                  </Button>
+                </Box>
+              </Paper>
+            );
+          })}
+        </Box>
+      ) : (
+        <Box className="no-data">{t("menu.productsNotAvailable")}</Box>
+      )}
+
+      <Stack className="pagination-section">
+        <Pagination
+          count={
+            products.length !== 0
+              ? productSearch.page + 1
+              : productSearch.page
+          }
+          page={productSearch.page}
+          renderItem={(item) => (
+            <PaginationItem
+              slots={{
+                previous: ArrowBackIcon,
+                next: ArrowForwardIcon,
+              }}
+              {...item}
+            />
+          )}
+          onChange={paginationHandler}
+        />
+      </Stack>
     </div>
   );
 }

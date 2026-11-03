@@ -245,7 +245,7 @@ export default function TablesTable(props: TablesTableProps) {
                     <Button
                       size="small"
                       color="secondary"
-                      variant="contained"
+                      variant="outlined"
                       onClick={() => {
                         setCreate(false);
                         setOpen(true);
@@ -260,7 +260,7 @@ export default function TablesTable(props: TablesTableProps) {
                     </Button>
                     <Button
                       size="small"
-                      variant="contained"
+                      variant="outlined"
                       color="primary"
                       onClick={() => deleteTableHandler(t._id, t.tableNumber)}
                     >

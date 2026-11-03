@@ -400,10 +400,10 @@ export default function TableStatusTop() {
                             key={`${tableNumber}-${order.orderId}`}
                             sx={{
                               border: "1px solid",
-                              borderColor: isOrderDelivered ? "rgba(237, 152, 33, 0.5)" : "rgba(0,0,0,0.08)",
+                              borderColor: isOrderDelivered ? "rgba(245, 158, 11, 0.5)" : "divider",
                               borderRadius: 1,
                               p: 1,
-                              bgcolor: isOrderDelivered ? "rgba(237, 152, 33, 0.15)" : "background.paper",
+                              bgcolor: isOrderDelivered ? "rgba(245, 158, 11, 0.12)" : "background.paper",
                             }}
                           >
                             {order.createdAt && (
@@ -420,7 +420,7 @@ export default function TableStatusTop() {
                                       component="img"
                                       src={p.productImage || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="}
                                       alt={p.productName}
-                                      sx={{ width: 28, height: 28, borderRadius: 0.75, objectFit: "cover", bgcolor: "rgba(0,0,0,0.04)" }}
+                                      sx={{ width: 28, height: 28, borderRadius: 0.75, objectFit: "cover", bgcolor: "action.hover" }}
                                     />
                                     <Typography
                                       variant="caption"

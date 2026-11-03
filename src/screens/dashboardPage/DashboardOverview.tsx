@@ -1,22 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-  Paper,
-  Avatar,
-  Grid,
-} from "@mui/material";
+import { Typography, Stack, Paper, Avatar, Grid } from "@mui/material";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
-import DashboardCustomizeRoundedIcon from "@mui/icons-material/DashboardCustomizeRounded";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
@@ -46,7 +36,9 @@ const tableStatusRetriever = createSelector(
   (tableStatus) => ({ tableStatus })
 );
 
-function KpiItem({ labelKey, value, icon, iconBg, iconColor, valueColor, onClick }: any) {
+type KpiTone = "red" | "success" | "warning" | "neutral";
+
+function KpiItem({ labelKey, value, icon, tone = "neutral", onClick }: any) {
   const { t } = useTranslation();
   const label = t(labelKey);
   const isMoney = labelKey === "dashboard.monthlySales" || labelKey === "dashboard.todayIncome" || labelKey === "dashboard.avgOrderValue";
@@ -68,33 +60,16 @@ function KpiItem({ labelKey, value, icon, iconBg, iconColor, valueColor, onClick
 
   return (
     <Paper
-      elevation={1}
-      className="kpi-item"
+      className={`kpi-item kpi-tone-${tone as KpiTone}${onClick ? " kpi-clickable" : ""}`}
       onClick={onClick}
-      sx={{ cursor: onClick ? "pointer" : "default", "&:hover": onClick ? { boxShadow: 3 } : {} }}
     >
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        spacing={2}
-        className="kpi-item-content"
-      >
-        <Stack direction="row" spacing={1.5} alignItems="center" className="kpi-item-left">
-          <Avatar
-            className="kpi-item-avatar"
-            sx={{ bgcolor: iconBg, color: iconColor }}
-          >
-            {icon}
-          </Avatar>
-          <Typography variant="h4" className="kpi-item-label">
-            {label}
-          </Typography>
-        </Stack>
-        <Typography variant="h4" className="kpi-item-value" style={{ color: valueColor }}>
-          {displayValue}
-        </Typography>
+      <Stack direction="row" spacing={1.25} alignItems="center" className="kpi-item-head">
+        <Avatar variant="rounded" className="kpi-item-avatar">
+          {icon}
+        </Avatar>
+        <Typography className="kpi-item-label">{label}</Typography>
       </Stack>
+      <Typography className="kpi-item-value">{displayValue}</Typography>
     </Paper>
   );
 }
@@ -138,25 +113,19 @@ export default function DashboardOverview() {
       labelKey: "dashboard.totalOrders",
       value: orderStatis?.totalOrder,
       icon: <ReceiptLongIcon />,
-      iconBg: "#e3f2fd",
-      iconColor: "#1976d2",
-      valueColor: "#1976d2",
+      tone: "red",
     },
     {
       labelKey: "dashboard.pendingOrders",
       value: orderStatis?.pendingOrder,
       icon: <QueryBuilderIcon />,
-      iconBg: "#fff8e1",
-      iconColor: "#f9a825",
-      valueColor: "#f9a825",
+      tone: "warning",
     },
     {
       labelKey: "dashboard.completedOrders",
       value: orderStatis?.complatedOrder,
       icon: <CheckCircleIcon />,
-      iconBg: "#e8f5e9",
-      iconColor: "#2e7d32",
-      valueColor: "#2e7d32",
+      tone: "success",
       onClick: () => navigate("/completed-orders-stats"),
     },
 
@@ -165,25 +134,19 @@ export default function DashboardOverview() {
       labelKey: "dashboard.totalItems",
       value: productStatus[0]?.total,
       icon: <RestaurantMenuIcon />,
-      iconBg: "#eef2ff",
-      iconColor: "#1e40af",
-      valueColor: "#1e40af",
+      tone: "neutral",
     },
     {
       labelKey: "dashboard.availableItems",
       value: productStatus[0]?.available,
       icon: <CheckCircleIcon />,
-      iconBg: "#e8f5e9",
-      iconColor: "#2e7d32",
-      valueColor: "#2e7d32",
+      tone: "success",
     },
     {
       labelKey: "dashboard.unavailableItems",
       value: productStatus[0]?.unavailable,
       icon: <CancelRoundedIcon />,
-      iconBg: "#ffebee",
-      iconColor: "#c62828",
-      valueColor: "#c62828",
+      tone: "red",
     },
     // ===== Tables =====
     {
@@ -192,9 +155,7 @@ export default function DashboardOverview() {
         (val) => val.tableStatus === TableStatus.AVAILABLE
       ).length,
       icon: <TableRestaurantIcon />,
-      iconBg: "#e8f5e9",
-      iconColor: "#2e7d32",
-      valueColor: "#2e7d32",
+      tone: "success",
     },
     {
       labelKey: "dashboard.tablesOccupied",
@@ -202,9 +163,7 @@ export default function DashboardOverview() {
         (val) => val.tableStatus === TableStatus.OCCUPIED
       ).length,
       icon: <TableRestaurantIcon />,
-      iconBg: "#ede7f6",
-      iconColor: "#5e35b1",
-      valueColor: "#5e35b1",
+      tone: "red",
     },
     {
       labelKey: "dashboard.cleaningTables",
@@ -212,9 +171,7 @@ export default function DashboardOverview() {
         (val) => val.tableStatus === TableStatus.CLEANING
       ).length,
       icon: <TableRestaurantIcon />,
-      iconBg: "#fff8e1",
-      iconColor: "#c62828",
-      valueColor: "#c62828",
+      tone: "warning",
     },
 
     // ===== Other Metrics =====
@@ -223,58 +180,29 @@ export default function DashboardOverview() {
       value: tableStatus?.filter((val) => val.tableCall === TableCall.ACTIVE)
         .length,
       icon: <NotificationsRoundedIcon />,
-      iconBg: "#fff3e0",
-      iconColor: "#ef6c00",
-      valueColor: "#ef6c00",
+      tone: "warning",
     },
     {
       labelKey: "dashboard.monthlySales",
       value: monthlySales ?? orderStatis?.todayIncomeAndAOV?.[0]?.totalSum ?? 0,
       icon: <MonetizationOnIcon />,
-      iconBg: "#e8f5e9",
-      iconColor: "#2e7d32",
-      valueColor: "#2e7d32",
+      tone: "red",
       onClick: () => navigate("/sales-stats"),
     },
     {
       labelKey: "dashboard.avgOrderValue",
       value: orderStatis?.todayIncomeAndAOV?.[0]?.aovGross ?? 0,
       icon: <MonetizationOnIcon />,
-      iconBg: "#e8f5e9",
-      iconColor: "#1e40af",
-      valueColor: "#1e40af",
+      tone: "neutral",
     },
   ];
   return (
-    <Box className="dashboard-overview-container">
-      <Card className="dashboard-card">
-        <CardContent className="dashboard-card-content">
-          <Stack
-            direction="row"
-            alignItems="center"
-            spacing={1.5}
-            className="dashboard-header"
-          >
-            <Avatar
-              variant="rounded"
-              className="dashboard-header-avatar"
-            >
-              <DashboardCustomizeRoundedIcon />
-            </Avatar>
-            <Typography variant="h3" className="dashboard-header-title">
-              {t("dashboard.overview")}
-            </Typography>
-          </Stack>
-
-          <Grid container spacing={2}>
-            {kpis.map((k) => (
-              <Grid item xs={12} sm={6} md={4} key={k.labelKey}>
-                <KpiItem {...k} />
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
-    </Box>
+    <Grid container spacing={2} className="dashboard-kpis">
+      {kpis.map((k) => (
+        <Grid item xs={12} sm={6} lg={4} xl={3} key={k.labelKey}>
+          <KpiItem {...k} />
+        </Grid>
+      ))}
+    </Grid>
   );
 }
