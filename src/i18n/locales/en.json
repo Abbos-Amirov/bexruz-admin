@@ -215,5 +215,14 @@
     "fillAllInputs": "Please fulfill all inputs!",
     "messageEmpty": "Message is empty!",
     "imageFormat": "Only images with jpeg, jpg, png format allowed!"
+  },
+  "receipt": {
+    "print": "Print receipt",
+    "printOrder": "Print this order's receipt",
+    "title": "Receipt",
+    "table": "Table",
+    "order": "Order",
+    "total": "Total",
+    "thanks": "Thank you for your visit!"
   }
 }

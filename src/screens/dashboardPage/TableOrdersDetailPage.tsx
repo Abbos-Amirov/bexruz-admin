@@ -6,14 +6,18 @@ import {
   CardContent,
   Chip,
   Divider,
+  IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import OrderService from "../../services/Order.service";
 import { serverApi, socket } from "../../lib/config";
+import { printReceipt } from "../../lib/printReceipt";
 
 type ProductView = {
   productName: string;
@@ -214,7 +218,18 @@ export default function TableOrdersDetailPage() {
               Stol {tableNumber} - batafsil
             </Typography>
           </Stack>
-          <Chip label={`Umumiy summa: ${totalSum}`} color="primary" />
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Button
+              variant="outlined"
+              color="secondary"
+              startIcon={<PrintRoundedIcon />}
+              disabled={orders.length === 0}
+              onClick={() => printReceipt({ tableNumber, orders, t })}
+            >
+              {t("receipt.print")}
+            </Button>
+            <Chip label={`Umumiy summa: ${totalSum}`} color="primary" />
+          </Stack>
         </Stack>
 
         <Typography variant="body2" color="text.secondary" mb={2}>
@@ -240,9 +255,24 @@ export default function TableOrdersDetailPage() {
                   <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                     {new Date(order.createdAt).toLocaleString()}
                   </Typography>
-                  <Typography variant="caption">
-                    {order.orderStatus}/{order.paymentStatus}/{order.paymentMethod}
-                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="caption">
+                      {order.orderStatus}/{order.paymentStatus}/{order.paymentMethod}
+                    </Typography>
+                    <Tooltip title={t("receipt.printOrder")}>
+                  <IconButton
+                    size="small"
+                    className="receipt-icon-btn"
+                    aria-label={t("receipt.printOrder")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      printReceipt({ tableNumber, orders: [order], t });
+                    }}
+                  >
+                    <PrintRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                  </Stack>
                 </Stack>
 
                 <Divider sx={{ mb: 0.9 }} />

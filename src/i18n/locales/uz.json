@@ -215,5 +215,14 @@
     "fillAllInputs": "Barcha maydonlarni to'ldiring!",
     "messageEmpty": "Xabar bo'sh!",
     "imageFormat": "Faqat jpeg, jpg, png formatidagi rasmlar ruxsat etiladi!"
+  },
+  "receipt": {
+    "print": "Chek chiqarish",
+    "printOrder": "Shu buyurtma chekini chiqarish",
+    "title": "To'lov cheki",
+    "table": "Stol",
+    "order": "Buyurtma",
+    "total": "Jami",
+    "thanks": "Xaridingiz uchun rahmat!"
   }
 }

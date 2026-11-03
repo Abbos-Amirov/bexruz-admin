@@ -365,3 +365,17 @@
     gap: 0.75rem;
   }
 }
+
+/* Chek chiqarish ikonkasi (har bir buyurtma blokida) */
+.receipt-icon-btn.MuiIconButton-root {
+  width: 30px;
+  height: 30px;
+  color: var(--bx-muted);
+  border: 1px solid var(--bx-border);
+}
+
+.receipt-icon-btn.MuiIconButton-root:hover {
+  color: var(--bx-red);
+  border-color: rgba(225, 29, 46, 0.45);
+  background: var(--bx-red-soft);
+}

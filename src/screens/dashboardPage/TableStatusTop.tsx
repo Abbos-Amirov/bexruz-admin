@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, CardContent, Typography, Stack, Grid, Box, Divider, Chip, Button, Paper } from "@mui/material";
+import { Card, CardContent, Typography, Stack, Grid, Box, Divider, Chip, Button, Paper, IconButton, Tooltip } from "@mui/material";
+import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import { createSelector } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +14,7 @@ import { serverApi, socket } from "../../lib/config";
 import { setTableStatus } from "./slice";
 import { TableStatus } from "../../lib/enums/table.enum";
 import TableService from "../../services/Table.service";
+import { printReceipt } from "../../lib/printReceipt";
 import "../../css/tableStatus.css";
 
 const tableStatusRetriever = createSelector(
@@ -406,11 +408,24 @@ export default function TableStatusTop() {
                               bgcolor: isOrderDelivered ? "rgba(245, 158, 11, 0.12)" : "background.paper",
                             }}
                           >
-                            {order.createdAt && (
-                              <Typography variant="caption" sx={{ display: "block", color: "text.secondary", mb: 0.5 }}>
-                                {new Date(order.createdAt).toLocaleString()}
+                            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
+                              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                                {order.createdAt ? new Date(order.createdAt).toLocaleString() : ""}
                               </Typography>
-                            )}
+                              <Tooltip title={t("receipt.printOrder")}>
+                                <IconButton
+                                  size="small"
+                                  className="receipt-icon-btn"
+                                  aria-label={t("receipt.printOrder")}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    printReceipt({ tableNumber, orders: [order], t });
+                                  }}
+                                >
+                                  <PrintRoundedIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Stack>
                             <Divider sx={{ mb: 0.75 }} />
                             <Stack spacing={0.75}>
                               {order.products.map((p, idx) => (
@@ -451,21 +466,36 @@ export default function TableStatusTop() {
                         })}
                       </Stack>
                     )}
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: "divider" }}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1} sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: "divider" }}>
                       <Typography variant="body1" sx={{ fontWeight: 700, fontSize: "1.15rem" }}>
                         Jami: {tableTotal}
                       </Typography>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="success"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCompleteTableOrders(String(tableNumber));
-                        }}
-                      >
-                        {t("dashboard.paid")}
-                      </Button>
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="secondary"
+                          startIcon={<PrintRoundedIcon />}
+                          disabled={orders.length === 0}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            printReceipt({ tableNumber, orders, t });
+                          }}
+                        >
+                          {t("receipt.print")}
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          color="success"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCompleteTableOrders(String(tableNumber));
+                          }}
+                        >
+                          {t("dashboard.paid")}
+                        </Button>
+                      </Stack>
                     </Stack>
                   </Paper>
                 </Grid>
