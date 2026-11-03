@@ -49,7 +49,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "start:prod": "serve -s build -l 3001",
+    "start:prod": "serve -s build -l 3013",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

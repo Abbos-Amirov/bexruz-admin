@@ -1,16 +1,16 @@
 import { io } from "socket.io-client";
 
 const apiBase =
-  process.env.REACT_APP_API_URL || "http://38.247.134.248:4009";
+  process.env.REACT_APP_API_URL || "http://38.247.134.248:4013";
 export const serverApi: string = apiBase;
 /** Rasmlar uchun backend URL (proxy bypass, to'g'ridan-to'g'ri so'rov) */
 export const imageBaseUrl: string = apiBase;
 /** Admin panel URL (logout redirect) */
 export const frontendUrl: string =
-  process.env.REACT_APP_FRONTEND_URL || "http://38.247.134.248:3001";
+  process.env.REACT_APP_FRONTEND_URL || "http://38.247.134.248:3013";
 /** BEXRUZ client frontend - QR kod orqali mijozlar shu linkga yo'naltiriladi */
 export const clientUrl: string =
-  process.env.REACT_APP_CLIENT_URL || "http://38.247.134.248:3010";
+  process.env.REACT_APP_CLIENT_URL || "http://38.247.134.248:3014";
 
 export const socket = io(apiBase, {
   transports: ["websocket"],
