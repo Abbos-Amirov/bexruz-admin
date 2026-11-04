@@ -19,18 +19,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import DownloadIcon from "@mui/icons-material/Download";
-import { QRCodeSVG } from "qrcode.react";
 import { TableInquiry, TableUpdateInput } from "../../lib/types/table";
 import { createSelector } from "@reduxjs/toolkit";
 import { retrieveTables } from "./selector";
 import { useSelector } from "react-redux";
 import { TableStatus } from "../../lib/enums/table.enum";
-import { dateFmt, clientUrl } from "../../lib/config";
+import { dateFmt } from "../../lib/config";
 import {
   confirmDelete,
   sweetCenterSuccessAlert,
@@ -55,36 +52,6 @@ const getStatusLabel = (t: (key: string) => string, s: TableStatus) =>
     : s === TableStatus.OCCUPIED
     ? t("tables.occupied")
     : t("tables.cleaning");
-
-// --- helpers: SVG → PNG ---
-function downloadSvgAsPng(svgEl: SVGSVGElement, filename: string, px = 1024) {
-  const clone = svgEl.cloneNode(true) as SVGSVGElement;
-  if (!clone.getAttribute("xmlns"))
-    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  const xml = new XMLSerializer().serializeToString(clone);
-  const svgBlob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
-  const svgUrl = URL.createObjectURL(svgBlob);
-
-  const img = new Image();
-  img.onload = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = px;
-    canvas.height = px;
-    const ctx = canvas.getContext("2d")!;
-    (ctx as any).imageSmoothingEnabled = false; // keep modules crisp
-    ctx.drawImage(img, 0, 0, px, px);
-    URL.revokeObjectURL(svgUrl);
-
-    const pngUrl = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = pngUrl;
-    a.download = filename.endsWith(".png") ? filename : `${filename}.png`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  };
-  img.src = svgUrl;
-}
 
 interface TablesTableProps {
   tableSearch: TableInquiry;
@@ -141,7 +108,6 @@ export default function TablesTable(props: TablesTableProps) {
             <TableCell>{trans("orders.table")}</TableCell>
             <TableCell>{trans("orders.status")}</TableCell>
             <TableCell>{trans("tables.currentOrder")}</TableCell>
-            <TableCell>{trans("tables.qr")}</TableCell>
             <TableCell>{trans("tables.created")}</TableCell>
             <TableCell>{trans("tables.updated")}</TableCell>
             <TableCell align="center">{trans("tables.actions")}</TableCell>
@@ -150,11 +116,6 @@ export default function TablesTable(props: TablesTableProps) {
 
         <TableBody>
           {tables.map((t) => {
-            const url = `${clientUrl}/table/qr/${encodeURIComponent(
-              // Scane URL of table
-              t.qrToken
-            )}`;
-            const qrId = `qr-${t._id}`;
             return (
               <TableRow key={t._id} hover>
                 <TableCell>#{t.tableNumber}</TableCell>
@@ -183,36 +144,6 @@ export default function TablesTable(props: TablesTableProps) {
                       {trans("tables.detail")}
                     </Button>
                   </Stack>
-                </TableCell>
-
-                {/* QR preview + Download buttons */}
-                <TableCell>
-                  <Tooltip title={url}>
-                    <div
-                      style={{ display: "flex", alignItems: "center", gap: 8 }}
-                    >
-                      <QRCodeSVG id={qrId} value={url} size={96} level="L" />
-                      <Stack direction="column" spacing={0.5}>
-                        <Button
-                          size="small"
-                          startIcon={<DownloadIcon />}
-                          onClick={() => {
-                            const svg = document.getElementById(
-                              qrId
-                            ) as SVGSVGElement | null;
-                            if (svg)
-                              downloadSvgAsPng(
-                                svg,
-                                `table-${t.tableNumber}-qr.png`,
-                                1024
-                              );
-                          }}
-                        >
-                          PNG
-                        </Button>
-                      </Stack>
-                    </div>
-                  </Tooltip>
                 </TableCell>
 
                 <TableCell>{dateFmt(t.createdAt)}</TableCell>
@@ -274,7 +205,7 @@ export default function TablesTable(props: TablesTableProps) {
 
           {tables.length === 0 && (
             <TableRow>
-              <TableCell colSpan={7}>{trans("tables.noTables")}</TableCell>
+              <TableCell colSpan={6}>{trans("tables.noTables")}</TableCell>
             </TableRow>
           )}
         </TableBody>
