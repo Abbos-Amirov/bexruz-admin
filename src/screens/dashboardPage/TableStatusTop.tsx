@@ -15,6 +15,7 @@ import { setTableStatus } from "./slice";
 import { TableStatus } from "../../lib/enums/table.enum";
 import TableService from "../../services/Table.service";
 import { printReceipt } from "../../lib/printReceipt";
+import { sweetErrorHandling } from "../../lib/sweetAlert";
 import "../../css/tableStatus.css";
 
 const tableStatusRetriever = createSelector(
@@ -267,6 +268,14 @@ export default function TableStatusTop() {
       const tableId = fromOrder || fromStore;
       if (!tableId) return;
 
+      // Kartochka darhol yo'qolsin; xato bo'lsa qaytariladi
+      const snapshot = groupedOrders[tableNumber];
+      setGroupedOrders((prev) => {
+        const next = { ...prev };
+        delete next[tableNumber];
+        return next;
+      });
+
       try {
         const orderSvc = new OrderService();
         await orderSvc.completeTableOrders(tableId);
@@ -299,6 +308,8 @@ export default function TableStatusTop() {
         fetchOrdersByTable(true);
       } catch (err) {
         console.error("handleCompleteTableOrders error:", err);
+        if (snapshot) setGroupedOrders((prev) => ({ ...prev, [tableNumber]: snapshot }));
+        sweetErrorHandling(err);
       }
     },
     [dispatch, fetchOrdersByTable, groupedOrders, tableStatus]
