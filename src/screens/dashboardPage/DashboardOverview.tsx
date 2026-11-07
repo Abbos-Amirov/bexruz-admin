@@ -19,6 +19,8 @@ import {
 import { useSelector } from "react-redux";
 import { TableStatus } from "../../lib/enums/table.enum";
 import { TableCall } from "../../lib/enums/tableCall.enum";
+import OrderService from "../../services/Order.service";
+import { salesPeriodStart } from "../../lib/salesPeriod";
 import "../../css/dashboardPage.css";
 
 /** REDUX SLICE & SELECTOR */
@@ -81,6 +83,18 @@ export default function DashboardOverview() {
   const { productStatus } = useSelector(productStatusRetriever);
   const { tableStatus } = useSelector(tableStatusRetriever);
   const [monthlySales, setMonthlySales] = useState<number | null>(null);
+  const [orderedDishes, setOrderedDishes] = useState<number | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    new OrderService()
+      .getProductSales(salesPeriodStart("month"))
+      .then((rows) => alive && setOrderedDishes(rows.reduce((s, r) => s + (r.soldQty || 0), 0)))
+      .catch(() => alive && setOrderedDishes(0));
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -131,10 +145,12 @@ export default function DashboardOverview() {
 
     // ===== Items =====
     {
-      labelKey: "dashboard.totalItems",
-      value: productStatus[0]?.total,
+      // Oxirgi 1 oyda buyurtma qilingan ovqatlar soni; bosilsa har bir taom bo'yicha ro'yxat
+      labelKey: "dashboard.totalOrderedDishes",
+      value: orderedDishes,
       icon: <RestaurantMenuIcon />,
       tone: "neutral",
+      onClick: () => navigate("/product-sales"),
     },
     {
       labelKey: "dashboard.availableItems",

@@ -84,7 +84,8 @@
     "newOrder": "Yangi buyurtma",
     "addTable": "Stol qo'shish",
     "createNewOrderConfirm": "Yangi buyurtma yaratmoqchimisiz?",
-    "markAsReadConfirm": "O'qilgan deb belgilashni xohlaysizmi?"
+    "markAsReadConfirm": "O'qilgan deb belgilashni xohlaysizmi?",
+    "totalOrderedDishes": "Jami buyurtma qilingan ovqatlar"
   },
   "menu": {
     "title": "Menyu",
@@ -224,5 +225,22 @@
     "order": "Buyurtma",
     "total": "Jami",
     "thanks": "Xaridingiz uchun rahmat!"
+  },
+  "productSales": {
+    "title": "Buyurtma qilingan ovqatlar",
+    "subtitle": "Har bir taom qanchadan sotilgani",
+    "today": "Bugun",
+    "week": "Oxirgi 1 hafta",
+    "month": "Oxirgi 1 oy",
+    "sold": "Sotildi",
+    "unit": "ta",
+    "revenue": "Summa",
+    "orders": "buyurtmada",
+    "totalQty": "Jami sotilgan ovqat",
+    "totalRevenue": "Jami summa",
+    "dishTypes": "Sotilgan taom turlari",
+    "noSales": "Bu davrda sotilmagan",
+    "empty": "Taomlar topilmadi",
+    "back": "Orqaga"
   }
 }

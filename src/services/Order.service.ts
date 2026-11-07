@@ -129,6 +129,25 @@ class OrderService {
       throw err;
     }
   }
+
+  /** Taomlar bo'yicha sotuv: `from` sanasidan beri har bir taomdan nechta sotilgani */
+  public async getProductSales(from: Date): Promise<ProductSale[]> {
+    const url = `${this.path}/admin/product/sales?from=${encodeURIComponent(from.toISOString())}`;
+    const result = await axios.get(url, { withCredentials: true });
+    return Array.isArray(result.data) ? result.data : [];
+  }
 }
 
 export default OrderService;
+
+export interface ProductSale {
+  _id: string;
+  productName: string;
+  productImages: string[];
+  productCollection: string;
+  productPrice: number;
+  productStatus: string;
+  soldQty: number;
+  revenue: number;
+  orderCount: number;
+}

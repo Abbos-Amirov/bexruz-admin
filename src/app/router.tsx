@@ -16,6 +16,7 @@ import OrdersPage from '../screens/ordersPage';
 import OrderDetailPage from '../screens/ordersPage/OrderDetailPage';
 import UsersPage from '../screens/usersPage';
 import TablesPage from '../screens/tablesPage';
+import ProductSalesPage from '../screens/productSalesPage';
 
 const AppRouter = () => (
   <Routes>
@@ -28,6 +29,14 @@ const AppRouter = () => (
           <MainLayout><CompletedOrdersStatsPage /></MainLayout>
         </ProtectedRoute>
       } 
+    />
+    <Route
+      path="/product-sales"
+      element={
+        <ProtectedRoute>
+          <MainLayout><ProductSalesPage /></MainLayout>
+        </ProtectedRoute>
+      }
     />
     <Route 
       path="/sales-stats"

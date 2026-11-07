@@ -1,0 +1,186 @@
+/* ============================================
+   BUYURTMA QILINGAN OVQATLAR (taomlar bo'yicha sotuv)
+   ============================================ */
+
+.product-sales-subtitle.MuiTypography-root {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bx-muted);
+}
+
+.product-sales-periods {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  border-radius: 12px;
+  background: var(--bx-surface);
+  border: 1px solid var(--bx-border);
+}
+
+.product-sales-period {
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--bx-muted);
+  font-family: var(--bx-font);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.product-sales-period:hover {
+  color: var(--bx-text);
+}
+
+.product-sales-period.active {
+  background: var(--bx-red);
+  color: #fff;
+}
+
+.product-sales-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+}
+
+.product-sale-card.MuiPaper-root {
+  display: flex;
+  gap: 14px;
+  padding: 12px;
+  border-radius: var(--bx-radius);
+  background: var(--bx-surface);
+  border: 1px solid var(--bx-border);
+  transition: border-color 0.2s ease;
+}
+
+.product-sale-card.MuiPaper-root:hover {
+  border-color: rgba(225, 29, 46, 0.4);
+}
+
+.product-sale-card.is-empty {
+  opacity: 0.55;
+}
+
+.product-sale-img {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background-color: var(--bx-surface-2);
+  background-size: cover;
+  background-position: center;
+}
+
+.product-sale-card.is-empty .product-sale-img {
+  filter: grayscale(1);
+}
+
+.product-sale-rank {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--bx-red);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.product-sale-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.product-sale-name.MuiTypography-root {
+  font-family: var(--bx-font);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--bx-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-sale-meta.MuiTypography-root {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bx-muted);
+}
+
+.product-sale-bar {
+  height: 6px;
+  margin: 4px 0 2px;
+  border-radius: 6px;
+  background: var(--bx-surface-2);
+  overflow: hidden;
+}
+
+.product-sale-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--bx-red);
+}
+
+.product-sale-qty.MuiTypography-root {
+  font-family: var(--bx-font);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--bx-text);
+}
+
+.product-sale-qty small {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bx-muted);
+}
+
+.product-sale-revenue.MuiTypography-root {
+  font-family: var(--bx-font);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--bx-red);
+}
+
+.product-sale-none.MuiTypography-root {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bx-muted);
+}
+
+.product-sales-empty {
+  padding: 60px 20px;
+  border: 1px dashed var(--bx-border);
+  border-radius: var(--bx-radius);
+  text-align: center;
+  font-weight: 600;
+  color: var(--bx-muted);
+}
+
+@media (max-width: 600px) {
+  .product-sales-periods {
+    width: 100%;
+  }
+
+  .product-sales-period {
+    flex: 1;
+    padding: 0 6px;
+  }
+
+  .product-sales-grid {
+    grid-template-columns: 1fr;
+  }
+}

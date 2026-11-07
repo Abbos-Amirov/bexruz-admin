@@ -84,7 +84,8 @@
     "newOrder": "New Order",
     "addTable": "Add table",
     "createNewOrderConfirm": "Do you want to create new order?",
-    "markAsReadConfirm": "Do you want to Mark as Read?"
+    "markAsReadConfirm": "Do you want to Mark as Read?",
+    "totalOrderedDishes": "Total dishes ordered"
   },
   "menu": {
     "title": "Menu",
@@ -224,5 +225,22 @@
     "order": "Order",
     "total": "Total",
     "thanks": "Thank you for your visit!"
+  },
+  "productSales": {
+    "title": "Dishes ordered",
+    "subtitle": "How many of each dish were sold",
+    "today": "Today",
+    "week": "Last 7 days",
+    "month": "Last 30 days",
+    "sold": "Sold",
+    "unit": "pcs",
+    "revenue": "Revenue",
+    "orders": "orders",
+    "totalQty": "Dishes sold",
+    "totalRevenue": "Total revenue",
+    "dishTypes": "Dishes with sales",
+    "noSales": "No sales in this period",
+    "empty": "No dishes found",
+    "back": "Back"
   }
 }
