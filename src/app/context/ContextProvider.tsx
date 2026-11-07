@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import Cookies from "universal-cookie";
 import { Member } from "../../lib/types/member";
 import { GlobalContext } from "../hooks/useGlobals";
 import { socket } from "../../lib/config";
+import { getAdminToken } from "../../lib/adminAuth";
 import { Notification } from "../../lib/types/notif";
 import NotificationService from "../../services/Notification.service";
 import { useDispatch, useSelector } from "react-redux";
@@ -82,8 +82,8 @@ const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [tableStatus]);
 
   useEffect(() => {
-    const cookies = new Cookies();
-    const accessToken = cookies.get("accessToken");
+    // Sessiya admin tokeni bo'yicha (httpOnly cookie JS dan o'qilmaydi va IP da saqlanmaydi)
+    const accessToken = getAdminToken();
 
     if (!accessToken) {
       localStorage.removeItem("memberData");
@@ -160,6 +160,15 @@ const ContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       localStorage.setItem("memberData", JSON.stringify(authMember));
     } else {
       localStorage.removeItem("memberData");
+    }
+  }, [authMember]);
+
+  // Socket faqat admin kirgan bo'lsa ulanadi (server token talab qiladi)
+  useEffect(() => {
+    if (authMember && getAdminToken()) {
+      if (!socket.connected) socket.connect();
+    } else if (socket.connected) {
+      socket.disconnect();
     }
   }, [authMember]);
 

@@ -1,5 +1,7 @@
 import axios from "axios";
 import { serverApi } from "../lib/config";
+import { clearAdminSession, setAdminToken } from "../lib/adminAuth";
+import { MemberType } from "../lib/enums/member.enum";
 import { Member, MemberUpdateInput, UserInquiry, LoginInput, MemberInput } from "../lib/types/member";
 
 const isHtmlResponse = (data: unknown): boolean =>
@@ -26,6 +28,7 @@ class MemberService {
       if (!member || !member._id) {
         throw new Error(result.data?.message || "Ro'yxatdan o'tish muvaffaqiyatsiz.");
       }
+      setAdminToken(result.data?.accessToken);
       localStorage.setItem("memberData", JSON.stringify(member));
       return member;
     } catch (err) {
@@ -73,6 +76,11 @@ class MemberService {
       if (!member || !member._id) {
         throw new Error(result.data?.message || "Login muvaffaqiyatsiz.");
       }
+      // Admin panelga faqat restoran (admin) akkaunti kiradi
+      if (member.memberType !== MemberType.RESTAURANT) {
+        throw { response: { data: { message: "Bu akkaunt admin emas" } } };
+      }
+      setAdminToken(result.data?.accessToken);
       localStorage.setItem("memberData", JSON.stringify(member));
       return member;
     } catch (err) {
@@ -82,11 +90,13 @@ class MemberService {
   }
 
   public async logout(): Promise<void> {
+    // Server javob bermasa ham lokal sessiya tozalanadi
+    clearAdminSession();
     try {
       const url = this.path + "/member/logout";
       const result = await axios.post(url, {}, { withCredentials: true });
       console.log("logout:", result);
-      localStorage.removeItem("memberData");
+      clearAdminSession();
     } catch (err) {
       console.log("Error, logout:", err);
       throw err;

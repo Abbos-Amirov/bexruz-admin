@@ -14,6 +14,9 @@ export const clientUrl: string =
 
 export const socket = io(apiBase, {
   transports: ["websocket"],
+  // Admin xonasiga faqat token bilan ulaniladi; ContextProvider login bo'lganda ulaydi
+  autoConnect: false,
+  auth: (cb) => cb({ token: localStorage.getItem("bexruz_admin_token") ?? "" }),
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,

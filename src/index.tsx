@@ -7,8 +7,11 @@ import { store } from "./app/store";
 import reportWebVitals from "./reportWebVitals";
 import ContextProvider from "./app/context/ContextProvider";
 import ThemeWrapper from "./app/ThemeWrapper";
+import { installAdminAuth } from "./lib/adminAuth";
 import "./css/admin-theme.css";
 import "./css/global.css";
+
+installAdminAuth();
 
 const container = document.getElementById("root")!;
 const root = createRoot(container);

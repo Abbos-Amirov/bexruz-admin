@@ -18,6 +18,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { MemberInput } from "../../lib/types/member";
+import { MemberType } from "../../lib/enums/member.enum";
 import MemberService from "../../services/Member.service";
 import { sweetErrorHandling, sweetTopSuccessAlert } from "../../lib/sweetAlert";
 import { useGlobals } from "../../app/hooks/useGlobals";
@@ -58,7 +59,8 @@ export default function SignupPage() {
       setLoading(true);
       const member = new MemberService();
       const { confirmPassword, ...input } = signupInput;
-      const result = await member.signup(input);
+      // Faqat birinchi admin (restoran) akkaunti yaratiladi; mavjud bo'lsa server rad etadi
+      const result = await member.signup({ ...input, memberType: MemberType.RESTAURANT });
 
       setAuthMember(result);
       await sweetTopSuccessAlert(t("auth.signupSuccess"), 1000);
