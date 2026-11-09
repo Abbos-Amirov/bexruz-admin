@@ -249,6 +249,9 @@
     "newOrder": "Новый заказ",
     "ordersShort": "заказ.",
     "allDetail": "Все столы",
-    "noOrders": "У этого стола нет открытых заказов"
+    "noOrders": "У этого стола нет открытых заказов",
+    "justNow": "только что",
+    "minutesAgo": "{{count}} мин назад",
+    "hoursAgo": "{{count}} ч назад"
   }
 }

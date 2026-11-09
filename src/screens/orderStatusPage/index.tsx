@@ -120,7 +120,7 @@ export default function OrderStatusPage() {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent sx={{ p: { xs: 1.5, sm: 2 }, pt: { xs: 6, sm: 6 } }}>
+        <DialogContent sx={{ p: 2 }}>
           {openTable && (
             <TableOrdersCard
               tableNumber={openTable}

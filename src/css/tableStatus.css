@@ -486,3 +486,275 @@
     min-height: 128px;
   }
 }
+
+/* ============================================
+   STOL BUYURTMALARI OYNASI (TableOrdersCard)
+   ============================================ */
+.toc {
+  font-family: var(--bx-font);
+  color: var(--bx-text);
+}
+
+.toc-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 44px 16px 4px; /* o'ngda yopish tugmasi uchun joy */
+  border-bottom: 1px solid var(--bx-border);
+}
+
+.toc-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bx-red);
+}
+
+.toc-title {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.toc-head-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  text-align: right;
+}
+
+.toc-summary {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bx-muted);
+}
+
+.toc-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--bx-red);
+  font-family: var(--bx-font);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.toc-link:hover {
+  text-decoration: underline;
+}
+
+.toc-empty {
+  padding: 40px 0;
+  text-align: center;
+  font-weight: 600;
+  color: var(--bx-muted);
+}
+
+.toc-orders {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.toc-order {
+  border-radius: 14px;
+  background: var(--bx-surface-2);
+  overflow: hidden;
+}
+
+.toc-order.is-delivered {
+  background: var(--bx-warning-soft);
+  box-shadow: inset 3px 0 0 var(--bx-warning);
+}
+
+.toc-order-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 14px;
+  border-bottom: 1px solid var(--bx-border);
+}
+
+.toc-order-no {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--bx-muted);
+}
+
+.toc-order-time {
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.toc-order-ago {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bx-subtle);
+}
+
+.toc-delivered {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bx-warning);
+  color: #1a1206;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.toc-order-print.MuiIconButton-root {
+  margin-left: auto;
+}
+
+.toc-items {
+  margin: 0;
+  padding: 6px 14px 10px;
+  list-style: none;
+}
+
+.toc-item {
+  display: grid;
+  grid-template-columns: 40px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.toc-item + .toc-item {
+  border-top: 1px dashed var(--bx-border);
+}
+
+.toc-item-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--bx-surface);
+}
+
+.toc-item-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.toc-item-name {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toc-item-unit {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bx-subtle);
+}
+
+.toc-item-qty {
+  min-width: 40px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: var(--bx-surface);
+  font-size: 15px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.toc-item-sum {
+  min-width: 82px;
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.toc-foot {
+  position: sticky;
+  bottom: -16px;
+  margin: 0 -16px -16px;
+  padding: 14px 16px 16px;
+  background: var(--bx-surface);
+  border-top: 1px solid var(--bx-border);
+}
+
+.toc-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.toc-total span {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bx-muted);
+}
+
+.toc-total strong {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--bx-red);
+}
+
+.toc-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 8px;
+}
+
+.toc-actions .MuiButton-root {
+  height: 44px;
+  font-weight: 800;
+}
+
+.toc-paid.MuiButton-root {
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+}
+
+@media (max-width: 600px) {
+  .toc-title {
+    font-size: 36px;
+  }
+
+  .toc-item {
+    grid-template-columns: 36px 1fr auto;
+  }
+
+  .toc-item-img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .toc-item-sum {
+    grid-column: 2 / -1;
+    min-width: 0;
+    margin-top: -6px;
+    font-size: 14px;
+  }
+
+  .toc-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .toc-actions .MuiButton-root {
+    padding: 0 8px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .toc-paid.MuiButton-root {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Typography, Stack, Box, Divider, Chip, Button, Paper, IconButton, Tooltip } from "@mui/material";
+import { Button, IconButton, Tooltip } from "@mui/material";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import { createSelector } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
@@ -351,122 +351,110 @@ interface TableOrdersCardProps {
   onPaid: () => void;
 }
 
+const money = (v: number) => `₩${(Number(v) || 0).toLocaleString("en-US")}`;
+
+const clock = (iso: string) => {
+  const d = new Date(iso);
+  return isNaN(d.getTime())
+    ? ""
+    : `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+};
+
 /** Bitta stolning buyurtmalari: taomlar, "Berildi", chek va "To'landi" */
 export function TableOrdersCard(props: TableOrdersCardProps) {
   const { tableNumber, orders, deliveredIds, onDelivered, onPaid } = props;
   const { t } = useTranslation();
   const navigate = useNavigate();
   const hasAnyDelivered = Boolean(deliveredIds && deliveredIds.size > 0);
-  const tableTotal = orders.reduce(
-    (sum, order) =>
-      sum + order.products.reduce((orderSum, product) => orderSum + product.quantity * product.price, 0),
-    0
-  );
+  const orderSum = (o: TableOrderView) => o.products.reduce((s, p) => s + p.quantity * p.price, 0);
+  const tableTotal = orders.reduce((sum, o) => sum + orderSum(o), 0);
+  const itemCount = orders.reduce((sum, o) => sum + o.products.reduce((s, p) => s + p.quantity, 0), 0);
+
+  const ago = (iso: string) => {
+    const min = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+    if (!Number.isFinite(min)) return "";
+    if (min < 1) return t("orderStatus.justNow");
+    if (min < 60) return t("orderStatus.minutesAgo", { count: min });
+    return t("orderStatus.hoursAgo", { count: Math.floor(min / 60) });
+  };
 
   return (
-    <Paper
-      className={`table-top-item table-order-box${hasAnyDelivered ? " table-order-has-delivered" : ""}`}
-      sx={{ p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2, bgcolor: "background.paper" }}
-    >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
-        <Typography
-          variant="h4"
-          sx={{ fontWeight: 800, fontSize: { xs: "1.5rem", sm: "1.75rem" }, color: "primary.main" }}
-        >
-          Stol {tableNumber}
-        </Typography>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Button
-            size="small"
-            variant="contained"
-            color="info"
-            disabled={orders.length === 0}
-            onClick={onDelivered}
-          >
-            {t("dashboard.delivered")}
-          </Button>
-          <Chip size="small" label={t("dashboard.ordersCount", { count: orders.length })} variant="outlined" />
-          <Button size="small" variant="text" onClick={() => navigate(`/orders-panel/table/${tableNumber}`)}>
-            {t("dashboard.detail")}
-          </Button>
-        </Stack>
-      </Stack>
+    <div className="toc">
+      {/* Sarlavha */}
+      <div className="toc-head">
+        <div>
+          <div className="toc-kicker">{t("receipt.table")}</div>
+          <div className="toc-title">{tableNumber}</div>
+        </div>
+        <div className="toc-head-meta">
+          <span className="toc-summary">
+            {t("dashboard.ordersCount", { count: orders.length })} · {itemCount} {t("dashboard.ordersUnit")}
+          </span>
+          <button type="button" className="toc-link" onClick={() => navigate(`/orders-panel/table/${tableNumber}`)}>
+            {t("dashboard.detail")} →
+          </button>
+        </div>
+      </div>
 
       {orders.length === 0 ? (
-        <Typography variant="body2" color="text.secondary">
-          {t("orderStatus.noOrders")}
-        </Typography>
+        <div className="toc-empty">{t("orderStatus.noOrders")}</div>
       ) : (
-        <Stack spacing={1}>
-          {orders.map((order) => {
-            const isOrderDelivered = Boolean(hasAnyDelivered && deliveredIds?.has(order.orderId));
+        <div className="toc-orders">
+          {orders.map((order, index) => {
+            const delivered = Boolean(hasAnyDelivered && deliveredIds?.has(order.orderId));
             return (
-              <Box
-                key={`${tableNumber}-${order.orderId}`}
-                sx={{
-                  border: "1px solid",
-                  borderColor: isOrderDelivered ? "rgba(245, 158, 11, 0.5)" : "divider",
-                  borderRadius: 1,
-                  p: 1,
-                  bgcolor: isOrderDelivered ? "rgba(245, 158, 11, 0.12)" : "background.paper",
-                }}
-              >
-                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
-                  <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                    {order.createdAt ? new Date(order.createdAt).toLocaleString() : ""}
-                  </Typography>
+              <section key={`${tableNumber}-${order.orderId}`} className={`toc-order${delivered ? " is-delivered" : ""}`}>
+                <header className="toc-order-head">
+                  <span className="toc-order-no">#{index + 1}</span>
+                  <span className="toc-order-time">{clock(order.createdAt)}</span>
+                  <span className="toc-order-ago">{ago(order.createdAt)}</span>
+                  {delivered && <span className="toc-delivered">✓ {t("dashboard.delivered")}</span>}
                   <Tooltip title={t("receipt.printOrder")}>
                     <IconButton
                       size="small"
-                      className="receipt-icon-btn"
+                      className="receipt-icon-btn toc-order-print"
                       aria-label={t("receipt.printOrder")}
                       onClick={() => printReceipt({ tableNumber, orders: [order], t })}
                     >
                       <PrintRoundedIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                </Stack>
-                <Divider sx={{ mb: 0.75 }} />
-                <Stack spacing={0.75}>
+                </header>
+
+                <ul className="toc-items">
                   {order.products.map((p, idx) => (
-                    <Stack key={`${order.orderId}-${idx}`} direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-                      <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
-                        <Box
-                          component="img"
-                          src={p.productImage || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="}
-                          alt={p.productName}
-                          sx={{ width: 28, height: 28, borderRadius: 0.75, objectFit: "cover", bgcolor: "action.hover" }}
-                        />
-                        <Typography
-                          variant="caption"
-                          sx={{ fontSize: "1rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}
-                        >
-                          {p.productName}
-                        </Typography>
-                      </Stack>
-                      <Typography variant="caption">
-                        <Box component="span" sx={{ fontSize: "1.2rem", fontWeight: 700 }}>
-                          {p.quantity} {t("dashboard.ordersUnit")}
-                        </Box>{" "}
-                        <Box component="span" sx={{ fontSize: "1.125rem", fontWeight: 600 }}>
-                          - {t("dashboard.priceLabel")}: {p.quantity * p.price}
-                        </Box>
-                      </Typography>
-                    </Stack>
+                    <li key={`${order.orderId}-${idx}`} className="toc-item">
+                      {p.productImage ? (
+                        <img className="toc-item-img" src={p.productImage} alt="" loading="lazy" />
+                      ) : (
+                        <span className="toc-item-img" aria-hidden="true" />
+                      )}
+                      <div className="toc-item-text">
+                        <span className="toc-item-name">{p.productName}</span>
+                        <span className="toc-item-unit">{money(p.price)}</span>
+                      </div>
+                      <span className="toc-item-qty">×{p.quantity}</span>
+                      <span className="toc-item-sum">{money(p.quantity * p.price)}</span>
+                    </li>
                   ))}
-                </Stack>
-              </Box>
+                </ul>
+              </section>
             );
           })}
-        </Stack>
+        </div>
       )}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1} sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: "divider" }}>
-        <Typography variant="body1" sx={{ fontWeight: 700, fontSize: "1.15rem" }}>
-          Jami: {tableTotal}
-        </Typography>
-        <Stack direction="row" spacing={1}>
+
+      {/* Jami va amallar */}
+      <footer className="toc-foot">
+        <div className="toc-total">
+          <span>{t("receipt.total")}</span>
+          <strong>{money(tableTotal)}</strong>
+        </div>
+        <div className="toc-actions">
+          <Button variant="outlined" color="secondary" disabled={orders.length === 0} onClick={onDelivered}>
+            {t("dashboard.delivered")}
+          </Button>
           <Button
-            size="small"
             variant="outlined"
             color="secondary"
             startIcon={<PrintRoundedIcon />}
@@ -475,11 +463,11 @@ export function TableOrdersCard(props: TableOrdersCardProps) {
           >
             {t("receipt.print")}
           </Button>
-          <Button size="small" variant="contained" color="success" disabled={orders.length === 0} onClick={onPaid}>
+          <Button variant="contained" color="success" disabled={orders.length === 0} onClick={onPaid} className="toc-paid">
             {t("dashboard.paid")}
           </Button>
-        </Stack>
-      </Stack>
-    </Paper>
+        </div>
+      </footer>
+    </div>
   );
 }
