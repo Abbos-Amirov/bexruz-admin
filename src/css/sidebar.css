@@ -147,3 +147,74 @@
 .nav-link.active .sidebar-icon {
   color: var(--bx-red) !important;
 }
+
+/* ---------- "Menyu" guruhi (ochiladigan) ---------- */
+.sidebar-group-toggle.MuiListItemButton-root {
+  /* MUI ListItemButton flex-grow:1 — ustunli ro'yxatda pastga cho'zilmasin */
+  flex: 0 0 auto;
+  color: var(--bx-on-dark-muted);
+}
+
+.sidebar .sidebar-list > .MuiCollapse-root {
+  flex: 0 0 auto;
+}
+
+.sidebar-group-toggle.MuiListItemButton-root:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--bx-on-dark);
+}
+
+.sidebar-group-toggle:hover .sidebar-icon {
+  color: var(--bx-on-dark) !important;
+}
+
+/* Guruh yopiq, lekin ichidagi sahifa faol — sarlavha belgilanadi */
+.sidebar-group-toggle.has-active .sidebar-icon {
+  color: var(--bx-red) !important;
+}
+
+.sidebar-group-toggle.has-active .sidebar-item .MuiTypography-root {
+  color: var(--bx-on-dark);
+}
+
+.sidebar-group-chevron {
+  font-size: 22px !important;
+  color: var(--bx-on-dark-muted);
+  transition: transform 0.2s ease;
+}
+
+.sidebar-group-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.sidebar-group-items {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 4px 26px;
+  padding-left: 10px;
+  border-left: 1px solid var(--bx-on-dark-border);
+}
+
+.nav-link.is-nested .sidebar-button {
+  min-height: 40px;
+  padding: 6px 10px;
+}
+
+.nav-link.is-nested .MuiListItemIcon-root {
+  min-width: 32px;
+}
+
+.nav-link.is-nested .sidebar-icon {
+  font-size: 19px !important;
+}
+
+.nav-link.is-nested .sidebar-item .MuiTypography-root {
+  font-size: 13.5px;
+}
+
+/* ichki bandda faol chiziq guruh chizig'i ustida */
+.nav-link.is-nested.active::before {
+  left: -11px;
+}

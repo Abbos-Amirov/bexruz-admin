@@ -41,7 +41,8 @@
     "menu": "Menu",
     "orders": "Orders",
     "tables": "Tables",
-    "users": "Users"
+    "users": "Users",
+    "dishes": "Dishes"
   },
   "topbar": {
     "search": "Search…",

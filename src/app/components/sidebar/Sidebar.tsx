@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Drawer,
@@ -10,9 +10,12 @@ import {
   ListItemButton,
   IconButton,
   Tooltip,
+  Collapse,
 } from "@mui/material";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import RestaurantMenuRoundedIcon from "@mui/icons-material/RestaurantMenuRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
@@ -21,6 +24,9 @@ import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 import "../../../css/sidebar.css";
+
+/** "Menyu" guruhi ochiq/yopiq holati */
+const GROUP_KEY = "bexruz_sidebar_menu_group";
 
 interface SidebarProps {
   mobileOpen: boolean;
@@ -35,7 +41,7 @@ const Sidebar = ({ mobileOpen, onClose, collapsed = false, onCollapse }: Sidebar
   const { t } = useTranslation();
   const isMobile = useMediaQuery("(max-width:900px)");
 
-  const navItems = [
+  const topItems = [
     {
       to: "/",
       label: t("sidebar.dashboard"),
@@ -46,9 +52,13 @@ const Sidebar = ({ mobileOpen, onClose, collapsed = false, onCollapse }: Sidebar
       label: t("sidebar.orderStatus"),
       icon: <AssignmentIcon className="sidebar-icon" />,
     },
+  ];
+
+  /** "Menyu" guruhi: bosilganda ochiladi, yana bosilganda yashirinadi */
+  const groupItems = [
     {
       to: "/products",
-      label: t("sidebar.menu"),
+      label: t("sidebar.dishes"),
       icon: <ReceiptLongIcon className="sidebar-icon" />,
     },
     {
@@ -68,6 +78,42 @@ const Sidebar = ({ mobileOpen, onClose, collapsed = false, onCollapse }: Sidebar
     },
   ];
 
+  const location = useLocation();
+  const groupActive = groupItems.some((i) => location.pathname.startsWith(i.to));
+  const [groupOpen, setGroupOpen] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(GROUP_KEY) === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  // Guruhdagi sahifa ochilsa — faol band ko'rinib tursin
+  useEffect(() => {
+    if (groupActive) setGroupOpen(true);
+  }, [groupActive]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(GROUP_KEY, String(groupOpen));
+    } catch {}
+  }, [groupOpen]);
+
+  const renderLink = (item: { to: string; label: string; icon: React.ReactNode }, nested = false) => (
+    <NavLink
+      to={item.to}
+      key={item.to}
+      end={item.to === "/"}
+      className={({ isActive }) => `nav-link${isActive ? " active" : ""}${nested ? " is-nested" : ""}`}
+      onClick={isMobile ? onClose : undefined}
+    >
+      <ListItemButton className="sidebar-button">
+        <ListItemIcon>{item.icon}</ListItemIcon>
+        <ListItemText className="sidebar-item" primary={item.label} />
+      </ListItemButton>
+    </NavLink>
+  );
+
   const drawerContent = (
     <Box className="sidebar">
       <Box className="sidebar-brand">
@@ -86,21 +132,24 @@ const Sidebar = ({ mobileOpen, onClose, collapsed = false, onCollapse }: Sidebar
         </Tooltip>
       </Box>
       <List className="sidebar-list">
-        {navItems.map((item) => (
-          <NavLink
-            to={item.to}
-            key={item.to}
-            className={({ isActive }) =>
-              isActive ? "nav-link active" : "nav-link"
-            }
-            onClick={isMobile ? onClose : undefined}
-          >
-            <ListItemButton className="sidebar-button">
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText className="sidebar-item" primary={item.label} />
-            </ListItemButton>
-          </NavLink>
-        ))}
+        {topItems.map((item) => renderLink(item))}
+
+        <ListItemButton
+          className={`sidebar-button sidebar-group-toggle${groupActive ? " has-active" : ""}`}
+          onClick={() => setGroupOpen((v) => !v)}
+          aria-expanded={groupOpen}
+        >
+          <ListItemIcon>
+            <RestaurantMenuRoundedIcon className="sidebar-icon" />
+          </ListItemIcon>
+          <ListItemText className="sidebar-item" primary={t("sidebar.menu")} />
+          <ExpandMoreRoundedIcon className={`sidebar-group-chevron${groupOpen ? " is-open" : ""}`} />
+        </ListItemButton>
+        <Collapse in={groupOpen} timeout="auto" unmountOnExit>
+          <Box className="sidebar-group-items">
+            {groupItems.map((item) => renderLink(item, true))}
+          </Box>
+        </Collapse>
       </List>
     </Box>
   );

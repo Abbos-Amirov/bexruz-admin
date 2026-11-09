@@ -41,7 +41,8 @@
     "menu": "Menyu",
     "orders": "Buyurtmalar",
     "tables": "Stollar",
-    "users": "Foydalanuvchilar"
+    "users": "Foydalanuvchilar",
+    "dishes": "Taomlar"
   },
   "topbar": {
     "search": "Qidirish…",
