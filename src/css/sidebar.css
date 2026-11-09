@@ -22,12 +22,43 @@
 
 .sidebar-brand {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 0 22px 10px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--bx-on-dark-border);
+}
+
+.sidebar-brand-text {
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  padding: 0 10px 22px;
-  margin-bottom: 14px;
-  border-bottom: 1px solid var(--bx-on-dark-border);
+  min-width: 0;
+}
+
+/* Sidebar'ni yashirish "<" tugmasi */
+.sidebar-collapse-btn.MuiIconButton-root {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: var(--bx-on-dark);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--bx-on-dark-border);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-collapse-btn.MuiIconButton-root:hover {
+  background: var(--bx-red);
+  border-color: var(--bx-red);
+  color: #fff;
+  transform: translateX(-2px);
+}
+
+.sidebar-collapse-btn .MuiSvgIcon-root {
+  font-size: 24px;
 }
 
 .sidebar-logo {

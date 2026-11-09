@@ -41,6 +41,7 @@ const MainLayout = ({ children }: PropsWithChildren) => {
         mobileOpen={mobileOpen}
         onClose={handleDrawerToggle}
         collapsed={collapsed}
+        onCollapse={() => setCollapsed(true)}
       />
       <Box component="main" className={`main-layout-content${collapsed ? " is-collapsed" : ""}`}>
         {/* Sticky top bar */}
