@@ -10,10 +10,11 @@ import { useGlobals } from "../../hooks/useGlobals";
 
 interface TopbarProps {
   onMenuClick: () => void;
+  sidebarOpen: boolean;
 }
 
 export default function Topbar(props: TopbarProps) {
-  const { onMenuClick } = props;
+  const { onMenuClick, sidebarOpen } = props;
   const theme = useTheme();
   const { authMember } = useGlobals();
 
@@ -21,7 +22,7 @@ export default function Topbar(props: TopbarProps) {
     <Box sx={{ position: "sticky", top: 0, zIndex: theme.zIndex.appBar }}>
       <Box className="bx-topbar">
         {/* LEFT SECTION */}
-        <TopbarLeft onMenuClick={onMenuClick} />
+        <TopbarLeft onMenuClick={onMenuClick} sidebarOpen={sidebarOpen} />
 
         {/* RIGHT SECTION */}
         <Stack direction="row" alignItems="center" spacing={0.5}>

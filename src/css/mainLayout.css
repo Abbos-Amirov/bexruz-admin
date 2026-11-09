@@ -14,6 +14,12 @@
 @media (min-width: 900px) {
   .main-layout-content {
     margin-left: 248px;
+    transition: margin-left 0.25s ease;
+  }
+
+  /* Sidebar yashirilganda sahifa butun kenglikni egallaydi */
+  .main-layout-content.is-collapsed {
+    margin-left: 0;
   }
 }
 

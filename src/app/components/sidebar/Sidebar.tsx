@@ -22,9 +22,11 @@ import "../../../css/sidebar.css";
 interface SidebarProps {
   mobileOpen: boolean;
   onClose: () => void;
+  /** Kompyuterda sidebar yashirilgan */
+  collapsed?: boolean;
 }
 
-const Sidebar = ({ mobileOpen, onClose }: SidebarProps) => {
+const Sidebar = ({ mobileOpen, onClose, collapsed = false }: SidebarProps) => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery("(max-width:900px)");
 
@@ -101,9 +103,10 @@ const Sidebar = ({ mobileOpen, onClose }: SidebarProps) => {
         </Drawer>
       ) : (
         <Drawer
-          variant="permanent"
+          variant="persistent"
+          anchor="left"
           classes={{ paper: "sidebar-drawer-paper" }}
-          open
+          open={!collapsed}
         >
           {drawerContent}
         </Drawer>

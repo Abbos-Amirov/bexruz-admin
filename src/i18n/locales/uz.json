@@ -51,7 +51,9 @@
     "markAllRead": "Barchasini o'qilgan deb belgilash",
     "themeMode": "Mavzu rejimi",
     "language": "Til",
-    "logout": "Chiqish"
+    "logout": "Chiqish",
+    "hideMenu": "Menyuni yashirish",
+    "showMenu": "Menyuni ko'rsatish"
   },
   "dashboard": {
     "overview": "Boshqaruv paneli umumiy ko'rinishi",

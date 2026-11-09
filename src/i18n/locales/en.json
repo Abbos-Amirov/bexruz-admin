@@ -51,7 +51,9 @@
     "markAllRead": "Mark all as read",
     "themeMode": "Theme Mode",
     "language": "Language",
-    "logout": "Logout"
+    "logout": "Logout",
+    "hideMenu": "Hide menu",
+    "showMenu": "Show menu"
   },
   "dashboard": {
     "overview": "Dashboard Overview",

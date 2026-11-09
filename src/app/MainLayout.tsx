@@ -1,17 +1,32 @@
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import Sidebar from "./components/sidebar/Sidebar";
 import Topbar from "./components/topbar/Topbar";
-import { Box, Stack, useTheme } from "@mui/material";
+import { Box, Stack, useMediaQuery } from "@mui/material";
 import "../css/mainLayout.css";
 
-const drawerWidth = 248;
-const TOPBAR_HEIGHT = 64; // keep in sync with Topbar
+/** Kompyuterda sidebar yashirilgan/ochiq holati eslab qolinadi */
+const COLLAPSE_KEY = "bexruz_sidebar_collapsed";
 
 const MainLayout = ({ children }: PropsWithChildren) => {
+  const isMobile = useMediaQuery("(max-width:900px)");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const theme = useTheme();
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(COLLAPSE_KEY) === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(COLLAPSE_KEY, String(collapsed));
+    } catch {}
+  }, [collapsed]);
 
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
+  // Telefonda — ustidan ochiladigan drawer, kompyuterda — sidebar'ni yashirish/ko'rsatish
+  const handleMenuClick = () => (isMobile ? handleDrawerToggle() : setCollapsed((prev) => !prev));
 
   return (
     <Stack
@@ -25,10 +40,11 @@ const MainLayout = ({ children }: PropsWithChildren) => {
       <Sidebar
         mobileOpen={mobileOpen}
         onClose={handleDrawerToggle}
+        collapsed={collapsed}
       />
-      <Box component="main" className="main-layout-content">
+      <Box component="main" className={`main-layout-content${collapsed ? " is-collapsed" : ""}`}>
         {/* Sticky top bar */}
-        <Topbar onMenuClick={handleDrawerToggle} />
+        <Topbar onMenuClick={handleMenuClick} sidebarOpen={isMobile ? mobileOpen : !collapsed} />
 
         {/* Page content */}
         <Box className="main-layout-page-content">

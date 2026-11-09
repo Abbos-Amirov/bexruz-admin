@@ -51,7 +51,9 @@
     "markAllRead": "Отметить все как прочитанные",
     "themeMode": "Режим темы",
     "language": "Язык",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "hideMenu": "Скрыть меню",
+    "showMenu": "Показать меню"
   },
   "dashboard": {
     "overview": "Обзор панели управления",
