@@ -338,31 +338,33 @@
   }
 }
 
-/* Grid */
-.table-status-grid {
-  width: 100%;
+/* Grid — ekran kengligiga qarab ustunlar soni o'zi moslashadi */
+.table-status-grid.MuiGrid-container {
+  width: 100% !important;
   margin: 0 !important;
-  gap: 1rem;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
 }
 
 .table-status-grid > .MuiGrid-item {
   display: flex;
-  flex-grow: 0;
-  flex-shrink: 0;
-}
-
-@media (min-width: 1536px) {
-  .table-status-grid > .MuiGrid-item[class*="xl-"] {
-    flex-basis: calc(20% - 0.8rem);
-    max-width: calc(20% - 0.8rem);
-  }
+  max-width: none !important;
+  flex-basis: auto !important;
+  padding: 0 !important;
 }
 
 @media (max-width: 600px) {
-  .table-status-grid {
-    gap: 0.75rem;
+  .table-status-grid.MuiGrid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .table-new-order-badge {
+    top: 8px;
+    right: 8px;
+    padding: 2px 7px;
+    font-size: 11px;
   }
 }
 
@@ -378,4 +380,109 @@
   color: var(--bx-red);
   border-color: rgba(225, 29, 46, 0.45);
   background: var(--bx-red-soft);
+}
+
+/* ---------- Buyurtmalar holati: bosiladigan stollar ---------- */
+.table-status-hint.MuiTypography-root {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bx-muted);
+}
+
+.table-card[role="button"]:focus-visible {
+  outline: 2px solid var(--bx-red);
+  outline-offset: 2px;
+}
+
+.table-card .table-order-count.MuiTypography-root {
+  width: fit-content;
+  padding: 0.15rem 0.55rem;
+  border-radius: 8px;
+  background: var(--bx-surface-2);
+  color: var(--bx-text);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* Yangi buyurtma kelgan stol — qizil halqa pulsatsiyasi */
+.table-card.has-new-order {
+  border-color: var(--bx-red) !important;
+  animation: bxNewOrderPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes bxNewOrderPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(225, 29, 46, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(225, 29, 46, 0);
+  }
+}
+
+.table-new-order-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--bx-red);
+  color: #fff;
+  font-family: var(--bx-font);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 6px 16px rgba(225, 29, 46, 0.45);
+}
+
+.table-new-order-badge .MuiSvgIcon-root {
+  font-size: 15px;
+  animation: bxBellShake 1.2s ease-in-out infinite;
+}
+
+@keyframes bxBellShake {
+  0%, 60%, 100% { transform: rotate(0); }
+  10%, 30%, 50% { transform: rotate(-14deg); }
+  20%, 40% { transform: rotate(14deg); }
+}
+
+.table-status-legend-dot.new-order {
+  background-color: var(--bx-red);
+  box-shadow: 0 0 0 3px rgba(225, 29, 46, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .table-card.has-new-order,
+  .table-new-order-badge .MuiSvgIcon-root {
+    animation: none;
+  }
+}
+
+/* Telefon: sarlavha ustma-ust, tor kartochkada katta ikonka yashiriladi */
+@media (max-width: 600px) {
+  .table-status-header.MuiStack-root {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+
+  .table-status-legend.MuiStack-root {
+    gap: 8px 14px !important;
+  }
+
+  .table-status-legend.MuiStack-root > * {
+    margin: 0 !important;
+  }
+
+  .table-card .table-icon-avatar {
+    display: none;
+  }
+
+  .table-card {
+    height: auto;
+    min-height: 128px;
+  }
 }

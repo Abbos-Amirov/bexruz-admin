@@ -242,5 +242,13 @@
     "noSales": "Bu davrda sotilmagan",
     "empty": "Taomlar topilmadi",
     "back": "Orqaga"
+  },
+  "orderStatus": {
+    "hint": "Stolni bosib buyurtmalarini ko'ring",
+    "newBadge": "Yangi",
+    "newOrder": "Yangi buyurtma",
+    "ordersShort": "ta buyurtma",
+    "allDetail": "Barcha stollar",
+    "noOrders": "Bu stolda faol buyurtma yo'q"
   }
 }

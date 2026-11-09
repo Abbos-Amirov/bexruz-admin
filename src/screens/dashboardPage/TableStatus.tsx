@@ -49,6 +49,14 @@ const getTableStatusClass = (s: TableStatus): string => {
 interface TableInfoProps {
   inquiry: TableInquiry;
   setInquiry: (input: TableInquiry) => void;
+  /** Stol raqami → ochiq buyurtmalar soni */
+  orderCounts?: Record<string, number>;
+  /** Stol raqami → admin hali ko'rmagan (yangi) buyurtmalar soni */
+  newCounts?: Record<string, number>;
+  /** Stol bosilganda (buyurtmalarni ko'rsatish uchun) */
+  onTableClick?: (table: { _id: string; tableNumber: string }) => void;
+  /** Sarlavha o'ng tomonidagi qo'shimcha tugma */
+  headerAction?: React.ReactNode;
 }
 
 export default function TableInfo(props: TableInfoProps) {
@@ -60,7 +68,7 @@ export default function TableInfo(props: TableInfoProps) {
     (table) => table.tableCall === TableCall.ACTIVE
   );
 
-  const { setInquiry, inquiry } = props;
+  const { setInquiry, inquiry, orderCounts = {}, newCounts = {}, onTableClick, headerAction } = props;
 
   /** HANDLERS **/
   const callButtonHandler = async (input: TableUpdateInput) => {
@@ -150,11 +158,20 @@ export default function TableInfo(props: TableInfoProps) {
             <Avatar variant="rounded" className="table-status-avatar">
               <TableRestaurantIcon />
             </Avatar>
-            <Typography variant="h3" className="table-status-title">
-              {t("dashboard.tableStatus")}
-            </Typography>
+            <Box>
+              <Typography variant="h3" className="table-status-title">
+                {t("sidebar.orderStatus")}
+              </Typography>
+              <Typography variant="body2" className="table-status-hint">
+                {t("orderStatus.hint")}
+              </Typography>
+            </Box>
           </Stack>
-          <Stack direction="row" spacing={2} className="table-status-legend">
+          <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap className="table-status-legend">
+            <Stack direction="row" spacing={1} alignItems="center" className="table-status-legend-item">
+              <Box className="table-status-legend-dot new-order" />
+              <Typography variant="h5">{t("orderStatus.newOrder")}</Typography>
+            </Stack>
             <Stack direction="row" spacing={1} alignItems="center" className="table-status-legend-item">
               <Box className="table-status-legend-dot occupied" />
               <Typography variant="h5">{t("dashboard.occupied")}</Typography>
@@ -167,6 +184,7 @@ export default function TableInfo(props: TableInfoProps) {
               <Box className="table-status-legend-dot free" />
               <Typography variant="h5">{t("dashboard.free")}</Typography>
             </Stack>
+            {headerAction}
           </Stack>
         </Stack>
 
@@ -218,9 +236,26 @@ export default function TableInfo(props: TableInfoProps) {
           {tableStatus.map((table) => (
             <Grid item xs={12} sm={6} md={4} lg={3} xl={2.4} key={table._id} sx={{ display: 'flex', minWidth: 0 }}>
               <Box
-                className={`table-card ${getTableStatusClass(table.tableStatus)}`}
+                className={`table-card ${getTableStatusClass(table.tableStatus)}${
+                  (newCounts[String(table.tableNumber)] ?? 0) > 0 ? " has-new-order" : ""
+                }`}
                 sx={{ width: '100%', minWidth: 0 }}
+                role="button"
+                tabIndex={0}
+                onClick={() => onTableClick?.({ _id: table._id, tableNumber: String(table.tableNumber) })}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onTableClick?.({ _id: table._id, tableNumber: String(table.tableNumber) });
+                  }
+                }}
               >
+                {(newCounts[String(table.tableNumber)] ?? 0) > 0 && (
+                  <span className="table-new-order-badge">
+                    <NotificationsRoundedIcon fontSize="inherit" />
+                    {t("orderStatus.newBadge")} · {newCounts[String(table.tableNumber)]}
+                  </span>
+                )}
                 <Stack
                   height={"100%"}
                   direction="row"
@@ -239,16 +274,22 @@ export default function TableInfo(props: TableInfoProps) {
                         ? t("tables.occupied")
                         : t("tables.cleaning")}
                     </Typography>
+                    {(orderCounts[String(table.tableNumber)] ?? 0) > 0 && (
+                      <Typography variant="body2" className="table-order-count">
+                        {orderCounts[String(table.tableNumber)]} {t("orderStatus.ordersShort")}
+                      </Typography>
+                    )}
                   </Stack>
                   <Stack direction="row" spacing={1} alignItems="center" className="table-card-right">
                     {table.tableCall === TableCall.ACTIVE && (
                       <Button
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           callButtonHandler({
                             _id: table._id,
                             tableCall: TableCall.PAUSE,
-                          })
-                        }
+                          });
+                        }}
                         className="table-notification-button"
                       >
                         <RippleBadge

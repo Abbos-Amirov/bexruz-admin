@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, CardContent, Typography, Stack, Grid, Box, Divider, Chip, Button, Paper, IconButton, Tooltip } from "@mui/material";
+import { Typography, Stack, Box, Divider, Chip, Button, Paper, IconButton, Tooltip } from "@mui/material";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
-import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import { createSelector } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -50,13 +49,24 @@ const saveStored = (data: Record<string, Set<string>>) => {
   } catch {}
 };
 
-export default function TableStatusTop() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+export type TableOrderView = {
+  orderId: string;
+  tableId: string;
+  orderStatus: string;
+  paymentStatus: string;
+  paymentMethod: string;
+  createdAt: string;
+  products: { productName: string; productImage: string; quantity: number; price: number }[];
+};
+
+/**
+ * "Buyurtmalar holati": ochiq stol buyurtmalarini yuklaydi (socket + 5s polling),
+ * "Berildi" va "To'landi" amallarini beradi. Stollar setkasi va dialog shu hook'dan foydalanadi.
+ */
+export function useTableOrders() {  const dispatch = useDispatch();
   const { tableStatus } = useSelector(tableStatusRetriever);
   const [groupedOrders, setGroupedOrders] = useState<
-    Record<string, { orderId: string; tableId: string; orderStatus: string; paymentStatus: string; paymentMethod: string; createdAt: string; products: { productName: string; productImage: string; quantity: number; price: number }[] }[]>
+    Record<string, TableOrderView[]>
   >({});
   const [loading, setLoading] = useState<boolean>(false);
   /** Berildi bosilganda o'sha paytda mavjud bo'lgan order ID lar; sessionStorage da saqlanadi */
@@ -91,7 +101,7 @@ export default function TableStatusTop() {
         ? payload.tables
         : [];
 
-      const grouped: Record<string, { orderId: string; tableId: string; orderStatus: string; paymentStatus: string; paymentMethod: string; createdAt: string; products: { productName: string; productImage: string; quantity: number; price: number }[] }[]> = {};
+      const grouped: Record<string, TableOrderView[]> = {};
 
       const mapOrderToView = (order: any) => {
         const orderType = String(order?.orderType ?? order?.order_type ?? "").toUpperCase();
@@ -321,200 +331,155 @@ export default function TableStatusTop() {
     setDeliveredOrderIds((prev) => ({ ...prev, [String(tableNumber)]: ids }));
   }, []);
 
+
+  return {
+    groupedOrders,
+    loading,
+    tableNumbers,
+    deliveredOrderIds,
+    handleDelivered,
+    handleCompleteTableOrders,
+    refresh: fetchOrdersByTable,
+  };
+}
+
+interface TableOrdersCardProps {
+  tableNumber: string;
+  orders: TableOrderView[];
+  deliveredIds?: Set<string>;
+  onDelivered: (e: React.MouseEvent) => void;
+  onPaid: () => void;
+}
+
+/** Bitta stolning buyurtmalari: taomlar, "Berildi", chek va "To'landi" */
+export function TableOrdersCard(props: TableOrdersCardProps) {
+  const { tableNumber, orders, deliveredIds, onDelivered, onPaid } = props;
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const hasAnyDelivered = Boolean(deliveredIds && deliveredIds.size > 0);
+  const tableTotal = orders.reduce(
+    (sum, order) =>
+      sum + order.products.reduce((orderSum, product) => orderSum + product.quantity * product.price, 0),
+    0
+  );
+
   return (
-    <Card className="table-status-card table-status-top-card">
-      <CardContent sx={{ width: "100%", padding: "12px 16px" }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
-          <Typography variant="h5" className="table-status-top-title">
-            {t("dashboard.ordersPanel")}
-          </Typography>
+    <Paper
+      className={`table-top-item table-order-box${hasAnyDelivered ? " table-order-has-delivered" : ""}`}
+      sx={{ p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2, bgcolor: "background.paper" }}
+    >
+      <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={1} sx={{ mb: 2 }}>
+        <Typography
+          variant="h4"
+          sx={{ fontWeight: 800, fontSize: { xs: "1.5rem", sm: "1.75rem" }, color: "primary.main" }}
+        >
+          Stol {tableNumber}
+        </Typography>
+        <Stack direction="row" spacing={1} alignItems="center">
           <Button
-            variant="contained"
             size="small"
-            onClick={() => navigate("/orders-panel/all")}
+            variant="contained"
+            color="info"
+            disabled={orders.length === 0}
+            onClick={onDelivered}
           >
+            {t("dashboard.delivered")}
+          </Button>
+          <Chip size="small" label={t("dashboard.ordersCount", { count: orders.length })} variant="outlined" />
+          <Button size="small" variant="text" onClick={() => navigate(`/orders-panel/table/${tableNumber}`)}>
             {t("dashboard.detail")}
           </Button>
         </Stack>
+      </Stack>
 
-        {loading ? (
-          <Typography variant="body2" color="text.secondary">
-            Loading orders...
-          </Typography>
-        ) : tableNumbers.length === 0 ? (
-          <Typography variant="body2" color="text.secondary">
-            Faol (yakunlanmagan) stol buyurtmalari topilmadi.
-          </Typography>
-        ) : (
-          <Grid container spacing={2} className="table-status-top-grid">
-            {tableNumbers.map((tableNumber) => {
-              const orders = groupedOrders[tableNumber] ?? [];
-              const tableTotal = orders.reduce(
-                (sum, order) =>
-                  sum +
-                  order.products.reduce(
-                    (orderSum, product) => orderSum + product.quantity * product.price,
-                    0
-                  ),
-                0
-              );
-              const deliveredIds = deliveredOrderIds[String(tableNumber)];
-              const hasAnyDelivered = deliveredIds && deliveredIds.size > 0;
-              return (
-                <Grid item xs={12} sm={6} md={6} lg={4} key={`table-orders-${tableNumber}`}>
-                  <Paper
-                    elevation={2}
-                    className={`table-top-item table-order-box${hasAnyDelivered ? " table-order-has-delivered" : ""}`}
-                    sx={{
-                      cursor: "pointer",
-                      p: 2,
-                      border: "2px solid",
-                      borderColor: "divider",
-                      borderRadius: 2,
-                      bgcolor: "background.paper",
-                      "&:hover": {
-                        borderColor: "primary.main",
-                        boxShadow: 4,
-                      },
-                    }}
-                    onClick={() => navigate(`/orders-panel/table/${tableNumber}`)}
-                  >
-                    <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-                      <Typography
-                        variant="h4"
-                        sx={{ fontWeight: 800, fontSize: { xs: "1.5rem", sm: "1.75rem" }, color: "primary.main" }}
-                      >
-                        Stol {tableNumber}
-                      </Typography>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <Button
-                          size="small"
-                          variant="contained"
-                          color="info"
-                          onClick={(e) => handleDelivered(String(tableNumber), orders, e)}
+      {orders.length === 0 ? (
+        <Typography variant="body2" color="text.secondary">
+          {t("orderStatus.noOrders")}
+        </Typography>
+      ) : (
+        <Stack spacing={1}>
+          {orders.map((order) => {
+            const isOrderDelivered = Boolean(hasAnyDelivered && deliveredIds?.has(order.orderId));
+            return (
+              <Box
+                key={`${tableNumber}-${order.orderId}`}
+                sx={{
+                  border: "1px solid",
+                  borderColor: isOrderDelivered ? "rgba(245, 158, 11, 0.5)" : "divider",
+                  borderRadius: 1,
+                  p: 1,
+                  bgcolor: isOrderDelivered ? "rgba(245, 158, 11, 0.12)" : "background.paper",
+                }}
+              >
+                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
+                  <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                    {order.createdAt ? new Date(order.createdAt).toLocaleString() : ""}
+                  </Typography>
+                  <Tooltip title={t("receipt.printOrder")}>
+                    <IconButton
+                      size="small"
+                      className="receipt-icon-btn"
+                      aria-label={t("receipt.printOrder")}
+                      onClick={() => printReceipt({ tableNumber, orders: [order], t })}
+                    >
+                      <PrintRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+                <Divider sx={{ mb: 0.75 }} />
+                <Stack spacing={0.75}>
+                  {order.products.map((p, idx) => (
+                    <Stack key={`${order.orderId}-${idx}`} direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
+                      <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
+                        <Box
+                          component="img"
+                          src={p.productImage || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="}
+                          alt={p.productName}
+                          sx={{ width: 28, height: 28, borderRadius: 0.75, objectFit: "cover", bgcolor: "action.hover" }}
+                        />
+                        <Typography
+                          variant="caption"
+                          sx={{ fontSize: "1rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}
                         >
-                          {t("dashboard.delivered")}
-                        </Button>
-                        <Chip size="small" label={t("dashboard.ordersCount", { count: orders.length })} variant="outlined" />
-                        <TableRestaurantIcon fontSize="small" />
+                          {p.productName}
+                        </Typography>
                       </Stack>
+                      <Typography variant="caption">
+                        <Box component="span" sx={{ fontSize: "1.2rem", fontWeight: 700 }}>
+                          {p.quantity} {t("dashboard.ordersUnit")}
+                        </Box>{" "}
+                        <Box component="span" sx={{ fontSize: "1.125rem", fontWeight: 600 }}>
+                          - {t("dashboard.priceLabel")}: {p.quantity * p.price}
+                        </Box>
+                      </Typography>
                     </Stack>
-
-                    {orders.length === 0 ? (
-                      <Typography variant="body2" color="text.secondary">
-                        Buyurtma yo'q
-                      </Typography>
-                    ) : (
-                      <Stack spacing={1}>
-                        {orders.map((order) => {
-                          const isOrderDelivered = Boolean(hasAnyDelivered && deliveredIds?.has(order.orderId));
-                          return (
-                          <Box
-                            key={`${tableNumber}-${order.orderId}`}
-                            sx={{
-                              border: "1px solid",
-                              borderColor: isOrderDelivered ? "rgba(245, 158, 11, 0.5)" : "divider",
-                              borderRadius: 1,
-                              p: 1,
-                              bgcolor: isOrderDelivered ? "rgba(245, 158, 11, 0.12)" : "background.paper",
-                            }}
-                          >
-                            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.5 }}>
-                              <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                                {order.createdAt ? new Date(order.createdAt).toLocaleString() : ""}
-                              </Typography>
-                              <Tooltip title={t("receipt.printOrder")}>
-                                <IconButton
-                                  size="small"
-                                  className="receipt-icon-btn"
-                                  aria-label={t("receipt.printOrder")}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    printReceipt({ tableNumber, orders: [order], t });
-                                  }}
-                                >
-                                  <PrintRoundedIcon fontSize="small" />
-                                </IconButton>
-                              </Tooltip>
-                            </Stack>
-                            <Divider sx={{ mb: 0.75 }} />
-                            <Stack spacing={0.75}>
-                              {order.products.map((p, idx) => (
-                                <Stack key={`${order.orderId}-${idx}`} direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
-                                  <Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: 0 }}>
-                                    <Box
-                                      component="img"
-                                      src={p.productImage || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="}
-                                      alt={p.productName}
-                                      sx={{ width: 28, height: 28, borderRadius: 0.75, objectFit: "cover", bgcolor: "action.hover" }}
-                                    />
-                                    <Typography
-                                      variant="caption"
-                                      sx={{
-                                        fontSize: "1rem",
-                                        whiteSpace: "nowrap",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        maxWidth: 160,
-                                      }}
-                                    >
-                                      {p.productName}
-                                    </Typography>
-                                  </Stack>
-                                  <Typography variant="caption">
-                                    <Box component="span" sx={{ fontSize: "1.2rem", fontWeight: 700 }}>
-                                      {p.quantity} {t("dashboard.ordersUnit")}
-                                    </Box>{" "}
-                                    <Box component="span" sx={{ fontSize: "1.125rem", fontWeight: 600 }}>
-                                      - {t("dashboard.priceLabel")}: {p.quantity * p.price}
-                                    </Box>
-                                  </Typography>
-                                </Stack>
-                              ))}
-                            </Stack>
-                          </Box>
-                          );
-                        })}
-                      </Stack>
-                    )}
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1} sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: "divider" }}>
-                      <Typography variant="body1" sx={{ fontWeight: 700, fontSize: "1.15rem" }}>
-                        Jami: {tableTotal}
-                      </Typography>
-                      <Stack direction="row" spacing={1}>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color="secondary"
-                          startIcon={<PrintRoundedIcon />}
-                          disabled={orders.length === 0}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            printReceipt({ tableNumber, orders, t });
-                          }}
-                        >
-                          {t("receipt.print")}
-                        </Button>
-                        <Button
-                          size="small"
-                          variant="contained"
-                          color="success"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCompleteTableOrders(String(tableNumber));
-                          }}
-                        >
-                          {t("dashboard.paid")}
-                        </Button>
-                      </Stack>
-                    </Stack>
-                  </Paper>
-                </Grid>
-              );
-            })}
-          </Grid>
-        )}
-      </CardContent>
-    </Card>
+                  ))}
+                </Stack>
+              </Box>
+            );
+          })}
+        </Stack>
+      )}
+      <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1} sx={{ mt: 2, pt: 1.5, borderTop: 1, borderColor: "divider" }}>
+        <Typography variant="body1" sx={{ fontWeight: 700, fontSize: "1.15rem" }}>
+          Jami: {tableTotal}
+        </Typography>
+        <Stack direction="row" spacing={1}>
+          <Button
+            size="small"
+            variant="outlined"
+            color="secondary"
+            startIcon={<PrintRoundedIcon />}
+            disabled={orders.length === 0}
+            onClick={() => printReceipt({ tableNumber, orders, t })}
+          >
+            {t("receipt.print")}
+          </Button>
+          <Button size="small" variant="contained" color="success" disabled={orders.length === 0} onClick={onPaid}>
+            {t("dashboard.paid")}
+          </Button>
+        </Stack>
+      </Stack>
+    </Paper>
   );
 }

@@ -242,5 +242,13 @@
     "noSales": "No sales in this period",
     "empty": "No dishes found",
     "back": "Back"
+  },
+  "orderStatus": {
+    "hint": "Tap a table to see its orders",
+    "newBadge": "New",
+    "newOrder": "New order",
+    "ordersShort": "orders",
+    "allDetail": "All tables",
+    "noOrders": "No open orders at this table"
   }
 }
