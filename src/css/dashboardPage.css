@@ -123,3 +123,93 @@
   border-radius: 4px;
   background: var(--bx-red);
 }
+
+/* ============================================
+   Dashboard sarlavhasi — o'rtada, naqshli kartochka
+   ============================================ */
+.dash-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 34px 20px 28px;
+  border-radius: var(--bx-radius-lg);
+  border: 1px solid var(--bx-border);
+  background:
+    radial-gradient(ellipse 60% 120% at 50% 0%, rgba(225, 29, 46, 0.18) 0%, transparent 70%),
+    var(--bx-surface);
+  text-align: center;
+}
+
+/* nozik sharqona naqsh — ingichka chiziqli romb panjara, markazda so'nadi */
+.dash-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(225, 29, 46, 0.14) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(-45deg, rgba(225, 29, 46, 0.14) 0 1px, transparent 1px 22px);
+  mask-image: radial-gradient(ellipse 65% 95% at 50% 50%, transparent 40%, #000 100%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 95% at 50% 50%, transparent 40%, #000 100%);
+  pointer-events: none;
+}
+
+/* pastki qizil chiziq */
+.dash-hero::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 120px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--bx-red);
+  transform: translateX(-50%);
+}
+
+.dash-hero-ornament {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  color: var(--bx-red);
+}
+
+.dash-hero-ornament span {
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bx-red));
+}
+
+.dash-hero-ornament span:last-child {
+  background: linear-gradient(90deg, var(--bx-red), transparent);
+}
+
+.dash-hero-ornament i {
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.dash-hero-title.MuiTypography-root {
+  position: relative;
+  margin: 0;
+  font-family: var(--bx-font-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--bx-text);
+}
+
+.dash-hero-date.MuiTypography-root {
+  position: relative;
+  margin-top: 10px;
+  font-family: var(--bx-font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bx-muted);
+}
