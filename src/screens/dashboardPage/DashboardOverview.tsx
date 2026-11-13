@@ -140,7 +140,7 @@ export default function DashboardOverview() {
       value: orderStatis?.complatedOrder,
       icon: <CheckCircleIcon />,
       tone: "success",
-      onClick: () => navigate("/completed-orders-stats"),
+      onClick: () => navigate("/reports?tab=completed"),
     },
 
     // ===== Items =====
@@ -150,7 +150,7 @@ export default function DashboardOverview() {
       value: orderedDishes,
       icon: <RestaurantMenuIcon />,
       tone: "neutral",
-      onClick: () => navigate("/product-sales"),
+      onClick: () => navigate("/reports?tab=dishes"),
     },
     {
       labelKey: "dashboard.availableItems",
@@ -203,7 +203,7 @@ export default function DashboardOverview() {
       value: monthlySales ?? orderStatis?.todayIncomeAndAOV?.[0]?.totalSum ?? 0,
       icon: <MonetizationOnIcon />,
       tone: "red",
-      onClick: () => navigate("/sales-stats"),
+      onClick: () => navigate("/reports?tab=sales"),
     },
     {
       labelKey: "dashboard.avgOrderValue",

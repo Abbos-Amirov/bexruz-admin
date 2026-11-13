@@ -1,5 +1,5 @@
 // TableStatus.tsx
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   Card,
@@ -18,13 +18,12 @@ import CleaningServicesRoundedIcon from "@mui/icons-material/CleaningServicesRou
 import { RippleBadge } from "../../app/MaterialTheme/styled";
 import { retrieveTableStatus } from "./selector";
 import { createSelector } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { TableStatus } from "../../lib/enums/table.enum";
 import { TableCall } from "../../lib/enums/tableCall.enum";
 import { TableInquiry, TableUpdateInput } from "../../lib/types/table";
 import { sweetErrorHandling } from "../../lib/sweetAlert";
 import TableService from "../../services/Table.service";
-import { setTableStatus } from "./slice";
 import "../../css/tableStatus.css";
 
 /** REDUX SLICE & SELECTOR */
@@ -57,18 +56,20 @@ interface TableInfoProps {
   onTableClick?: (table: { _id: string; tableNumber: string }) => void;
   /** Sarlavha o'ng tomonidagi qo'shimcha tugma */
   headerAction?: React.ReactNode;
+  /** Tanlangan stol raqami (Kassa: o'ng panelda ochiq stol) */
+  selectedTable?: string | null;
+  /** Sarlavha matni (default: "Buyurtmalar holati") */
+  title?: string;
 }
 
 export default function TableInfo(props: TableInfoProps) {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const { tableStatus } = useSelector(tableStatusRetriever);
-  const cleaningInProgressRef = useRef<Set<string>>(new Set());
   const activeCallTables = tableStatus.filter(
     (table) => table.tableCall === TableCall.ACTIVE
   );
 
-  const { setInquiry, inquiry, orderCounts = {}, newCounts = {}, onTableClick, headerAction } = props;
+  const { setInquiry, inquiry, orderCounts = {}, newCounts = {}, onTableClick, headerAction, selectedTable, title } = props;
 
   /** HANDLERS **/
   const callButtonHandler = async (input: TableUpdateInput) => {
@@ -84,61 +85,6 @@ export default function TableInfo(props: TableInfoProps) {
       sweetErrorHandling(err).then();
     }
   };
-
-  useEffect(() => {
-    const isExpiredCleaning = (updatedAt: Date | string): boolean => {
-      const updatedAtMs = new Date(updatedAt).getTime();
-      if (!Number.isFinite(updatedAtMs)) return false;
-      return Date.now() - updatedAtMs >= 3 * 60 * 1000;
-    };
-
-    const makeCleaningTablesAvailable = async () => {
-      const currentTables = Array.isArray(tableStatus) ? tableStatus : [];
-      const expiredCleaning = currentTables.filter(
-        (table) =>
-          table.tableStatus === TableStatus.CLEANING &&
-          isExpiredCleaning(table.updatedAt) &&
-          !cleaningInProgressRef.current.has(table._id)
-      );
-
-      if (expiredCleaning.length === 0) return;
-
-      const tableSvc = new TableService();
-      const transitionedIds = new Set<string>();
-      await Promise.all(
-        expiredCleaning.map(async (table) => {
-          cleaningInProgressRef.current.add(table._id);
-          try {
-            await tableSvc.updateChosenTable({
-              _id: table._id,
-              tableStatus: TableStatus.AVAILABLE,
-            });
-            transitionedIds.add(table._id);
-          } catch (err) {
-            console.log("auto cleaning->available error:", err);
-          } finally {
-            cleaningInProgressRef.current.delete(table._id);
-          }
-        })
-      );
-
-      if (transitionedIds.size > 0) {
-        const nowIso = new Date().toISOString();
-        const nextTables = currentTables.map((table) =>
-          transitionedIds.has(table._id)
-            ? { ...table, tableStatus: TableStatus.AVAILABLE, updatedAt: nowIso }
-            : table
-        );
-        dispatch(setTableStatus(nextTables));
-      }
-
-      setInquiry({ ...inquiry });
-    };
-
-    makeCleaningTablesAvailable();
-    const id = window.setInterval(makeCleaningTablesAvailable, 15000);
-    return () => window.clearInterval(id);
-  }, [dispatch, tableStatus, inquiry, setInquiry]);
 
   return (
     <Card className="table-status-card">
@@ -160,7 +106,7 @@ export default function TableInfo(props: TableInfoProps) {
             </Avatar>
             <Box>
               <Typography variant="h3" className="table-status-title">
-                {t("sidebar.orderStatus")}
+                {title ?? t("sidebar.orderStatus")}
               </Typography>
               <Typography variant="body2" className="table-status-hint">
                 {t("orderStatus.hint")}
@@ -238,7 +184,7 @@ export default function TableInfo(props: TableInfoProps) {
               <Box
                 className={`table-card ${getTableStatusClass(table.tableStatus)}${
                   (newCounts[String(table.tableNumber)] ?? 0) > 0 ? " has-new-order" : ""
-                }`}
+                }${selectedTable != null && String(selectedTable) === String(table.tableNumber) ? " is-selected" : ""}`}
                 sx={{ width: '100%', minWidth: 0 }}
                 role="button"
                 tabIndex={0}

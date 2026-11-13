@@ -137,7 +137,7 @@ export default function TablesTable(props: TablesTableProps) {
                       variant="outlined"
                       onClick={() =>
                         navigate(
-                          `/orders-panel/table/${encodeURIComponent(t.tableNumber)}`
+                          `/kassa?table=${encodeURIComponent(t.tableNumber)}`
                         )
                       }
                     >

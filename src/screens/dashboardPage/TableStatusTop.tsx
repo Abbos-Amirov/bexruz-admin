@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
+import Swal from "sweetalert2";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { Button, IconButton, Tooltip } from "@mui/material";
 import PrintRoundedIcon from "@mui/icons-material/PrintRounded";
 import { createSelector } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { retrieveTableStatus } from "./selector";
 import { Table } from "../../lib/types/table";
@@ -12,7 +14,6 @@ import OrderService from "../../services/Order.service";
 import { serverApi, socket } from "../../lib/config";
 import { setTableStatus } from "./slice";
 import { TableStatus } from "../../lib/enums/table.enum";
-import TableService from "../../services/Table.service";
 import { printReceipt } from "../../lib/printReceipt";
 import { sweetErrorHandling } from "../../lib/sweetAlert";
 import "../../css/tableStatus.css";
@@ -56,7 +57,7 @@ export type TableOrderView = {
   paymentStatus: string;
   paymentMethod: string;
   createdAt: string;
-  products: { productName: string; productImage: string; quantity: number; price: number }[];
+  products: { itemId: string; productName: string; productImage: string; quantity: number; price: number }[];
 };
 
 /**
@@ -144,6 +145,7 @@ export function useTableOrders() {  const dispatch = useDispatch();
             Number(item?.itemPrice ?? item?.item_price ?? product?.productPrice ?? product?.product_price ?? 0) || 0;
 
           return {
+            itemId: String(item?._id ?? item?.id ?? ""),
             productName: String(
               product?.productName ?? product?.product_name ?? item?.productName ?? item?.product_name ?? "Unknown product"
             ),
@@ -290,25 +292,18 @@ export function useTableOrders() {  const dispatch = useDispatch();
         const orderSvc = new OrderService();
         await orderSvc.completeTableOrders(tableId);
 
-        // Stol holatini "tozalanmoqda"ga o‘tkazamiz (UIda darhol ko‘rinsin)
+        // Stol holatini "tozalanmoqda"ga backend o'zi o'tkazadi; UIda darhol ko'rinsin
         const currentTables = Array.isArray(tableStatus) ? (tableStatus as Table[]) : [];
         if (currentTables.length > 0) {
           const nowIso = new Date().toISOString();
-          const nextTables = currentTables.map((t) =>
-            t._id === tableId
-              ? { ...t, tableStatus: TableStatus.CLEANING, updatedAt: nowIso }
-              : t
+          dispatch(
+            setTableStatus(
+              currentTables.map((t) =>
+                t._id === tableId ? { ...t, tableStatus: TableStatus.CLEANING, updatedAt: nowIso } : t
+              )
+            )
           );
-          dispatch(setTableStatus(nextTables));
         }
-
-        // Backend table status ham sync bo‘lsin
-        const tableSvc = new TableService();
-        await tableSvc.updateChosenTable({
-          _id: tableId,
-          tableStatus: TableStatus.CLEANING,
-        });
-
         // Bu paneldan yo‘qolsin va delivered ro‘yxatdan o‘chirish
         setDeliveredOrderIds((prev) => {
           const next = { ...prev };
@@ -325,6 +320,21 @@ export function useTableOrders() {  const dispatch = useDispatch();
     [dispatch, fetchOrdersByTable, groupedOrders, tableStatus]
   );
 
+  /** Bitta taomni bekor qilish (tasdiqdan keyin) */
+  const handleCancelItem = useCallback(
+    async (itemId: string, quantity?: number) => {
+      if (!itemId) return;
+      try {
+        await new OrderService().cancelOrderItem(itemId, quantity);
+        await fetchOrdersByTable(true);
+      } catch (err) {
+        console.error("cancelOrderItem error:", err);
+        sweetErrorHandling(err);
+      }
+    },
+    [fetchOrdersByTable]
+  );
+
   const handleDelivered = useCallback((tableNumber: string, orders: { orderId: string }[], e: React.MouseEvent) => {
     e.stopPropagation();
     const ids = new Set(orders.map((o) => o.orderId));
@@ -339,6 +349,7 @@ export function useTableOrders() {  const dispatch = useDispatch();
     deliveredOrderIds,
     handleDelivered,
     handleCompleteTableOrders,
+    handleCancelItem,
     refresh: fetchOrdersByTable,
   };
 }
@@ -349,6 +360,8 @@ interface TableOrdersCardProps {
   deliveredIds?: Set<string>;
   onDelivered: (e: React.MouseEvent) => void;
   onPaid: () => void;
+  /** Bitta taomni bekor qilish (berilmasa tugma ko'rinmaydi) */
+  onCancelItem?: (itemId: string, quantity?: number) => void;
 }
 
 const money = (v: number) => `₩${(Number(v) || 0).toLocaleString("en-US")}`;
@@ -360,11 +373,47 @@ const clock = (iso: string) => {
     : `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 };
 
+/**
+ * Taomni bekor qilishdan oldin so'raydi. 1 dona bo'lsa — oddiy tasdiq,
+ * ko'p bo'lsa — nechtasini bekor qilish so'raladi. Bekor qilinsa `null`.
+ */
+async function askCancelQuantity(name: string, max: number, t: TFunction): Promise<number | null> {
+  if (max <= 1) {
+    const r = await Swal.fire({
+      icon: "warning",
+      title: t("kassa.cancelItemTitle"),
+      text: name,
+      showCancelButton: true,
+      confirmButtonText: t("kassa.cancelItemConfirm"),
+      cancelButtonText: t("kassa.keep"),
+      confirmButtonColor: "#c62828",
+    });
+    return r.isConfirmed ? 1 : null;
+  }
+  const r = await Swal.fire({
+    icon: "warning",
+    title: t("kassa.cancelItemTitle"),
+    text: `${name} — ${t("kassa.howMany", { max })}`,
+    input: "number",
+    inputValue: String(max),
+    inputAttributes: { min: "1", max: String(max), step: "1" },
+    showCancelButton: true,
+    confirmButtonText: t("kassa.cancelItemConfirm"),
+    cancelButtonText: t("kassa.keep"),
+    confirmButtonColor: "#c62828",
+    inputValidator: (v) => {
+      const n = Math.floor(Number(v));
+      return n >= 1 && n <= max ? null : t("kassa.howMany", { max });
+    },
+  });
+  if (!r.isConfirmed) return null;
+  return Math.floor(Number(r.value));
+}
+
 /** Bitta stolning buyurtmalari: taomlar, "Berildi", chek va "To'landi" */
 export function TableOrdersCard(props: TableOrdersCardProps) {
-  const { tableNumber, orders, deliveredIds, onDelivered, onPaid } = props;
+  const { tableNumber, orders, deliveredIds, onDelivered, onPaid, onCancelItem } = props;
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const hasAnyDelivered = Boolean(deliveredIds && deliveredIds.size > 0);
   const orderSum = (o: TableOrderView) => o.products.reduce((s, p) => s + p.quantity * p.price, 0);
   const tableTotal = orders.reduce((sum, o) => sum + orderSum(o), 0);
@@ -390,9 +439,6 @@ export function TableOrdersCard(props: TableOrdersCardProps) {
           <span className="toc-summary">
             {t("dashboard.ordersCount", { count: orders.length })} · {itemCount} {t("dashboard.ordersUnit")}
           </span>
-          <button type="button" className="toc-link" onClick={() => navigate(`/orders-panel/table/${tableNumber}`)}>
-            {t("dashboard.detail")} →
-          </button>
         </div>
       </div>
 
@@ -435,6 +481,22 @@ export function TableOrdersCard(props: TableOrdersCardProps) {
                       </div>
                       <span className="toc-item-qty">×{p.quantity}</span>
                       <span className="toc-item-sum">{money(p.quantity * p.price)}</span>
+                      {onCancelItem && p.itemId && (
+                        <Tooltip title={t("kassa.cancelItem")}>
+                          <IconButton
+                            size="small"
+                            className="toc-item-cancel"
+                            aria-label={t("kassa.cancelItem")}
+                            onClick={async () => {
+                              const qty = await askCancelQuantity(p.productName, p.quantity, t);
+                              if (qty === null) return;
+                              onCancelItem(p.itemId, qty >= p.quantity ? undefined : qty);
+                            }}
+                          >
+                            <CloseRoundedIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </li>
                   ))}
                 </ul>

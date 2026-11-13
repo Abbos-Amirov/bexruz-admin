@@ -113,21 +113,13 @@ export default function NotificationAlertDialog() {
     const n = notificationAlert;
     if (!n) return;
     const resolvedTableNum = n.tableNumber || tableNumber;
-    // ORDER tipida buyurtma batafsiliga yoki stol buyurtmalariga o'tish
-    if (isOrder) {
-      if (n.orderId) {
-        navigate(`/orders/${n.orderId}`);
-      } else if (resolvedTableNum) {
-        navigate(`/orders-panel/table/${encodeURIComponent(resolvedTableNum)}`);
-      } else if (n.tableId) {
-        navigate(`/tables/${n.tableId}`, {
-          state: resolvedTableNum ? { tableNumber: resolvedTableNum } : undefined,
-        });
-      }
-    } else if (n.tableId) {
-      navigate(`/tables/${n.tableId}`, {
-        state: resolvedTableNum ? { tableNumber: resolvedTableNum } : undefined,
-      });
+    // Stol ma'lum bo'lsa — Kassada o'sha stol ochiladi; aks holda buyurtma batafsili
+    if (resolvedTableNum) {
+      navigate(`/kassa?table=${encodeURIComponent(resolvedTableNum)}`);
+    } else if (isOrder && n.orderId) {
+      navigate(`/orders/${n.orderId}`);
+    } else {
+      navigate("/kassa");
     }
     setNotificationAlert(null);
   };

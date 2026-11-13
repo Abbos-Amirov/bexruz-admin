@@ -130,6 +130,13 @@ class OrderService {
     }
   }
 
+  /** Buyurtmadan bitta taomni bekor qilish; `quantity` berilmasa taom butunlay olib tashlanadi */
+  public async cancelOrderItem(itemId: string, quantity?: number): Promise<unknown> {
+    const url = `${this.path}/admin/order/item/${itemId}/cancel`;
+    const result = await axios.post(url, quantity ? { quantity } : {}, { withCredentials: true });
+    return result.data;
+  }
+
   /** Taomlar bo'yicha sotuv: `from` sanasidan beri har bir taomdan nechta sotilgani */
   public async getProductSales(from: Date): Promise<ProductSale[]> {
     const url = `${this.path}/admin/product/sales?from=${encodeURIComponent(from.toISOString())}`;

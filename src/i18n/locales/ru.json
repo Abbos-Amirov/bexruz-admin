@@ -36,13 +36,16 @@
   },
   "sidebar": {
     "adminPanel": "Панель администратора",
-    "dashboard": "Панель управления",
+    "dashboard": "Главная",
     "orderStatus": "Состояние заказов",
     "menu": "Меню",
     "orders": "Заказы",
     "tables": "Столы",
     "users": "Пользователи",
-    "dishes": "Блюда"
+    "dishes": "Блюда",
+    "kassa": "Касса",
+    "ordersHistory": "История заказов",
+    "reports": "Отчёты"
   },
   "topbar": {
     "search": "Поиск…",
@@ -256,5 +259,18 @@
     "justNow": "только что",
     "minutesAgo": "{{count}} мин назад",
     "hoursAgo": "{{count}} ч назад"
+  },
+  "kassa": {
+    "pickTable": "Выберите стол слева, чтобы увидеть заказы",
+    "cancelItem": "Отменить блюдо",
+    "cancelItemTitle": "Отменить блюдо?",
+    "cancelItemConfirm": "Да, отменить",
+    "keep": "Нет",
+    "howMany": "сколько отменить? (1–{{max}})"
+  },
+  "reports": {
+    "sales": "Сумма продаж",
+    "completed": "Завершённые заказы",
+    "dishes": "По блюдам"
   }
 }

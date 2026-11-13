@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { Avatar, Box, Button, CircularProgress, Grid, Paper, Stack, Typography } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Avatar, Box, CircularProgress, Grid, Paper, Stack, Typography } from "@mui/material";
 import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
@@ -25,7 +23,6 @@ const imageUrl = (path?: string) => {
 /** Dashboard → "Jami buyurtma qilingan ovqatlar": har bir taom qanchadan sotilgani */
 export default function ProductSalesPage() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [period, setPeriod] = useState<SalesPeriod>("month");
   const [rows, setRows] = useState<ProductSale[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,9 +67,6 @@ export default function ProductSalesPage() {
         sx={{ mb: 2.5 }}
       >
         <Stack direction="row" spacing={1.5} alignItems="center">
-          <Button variant="outlined" color="secondary" startIcon={<ArrowBackIcon />} onClick={() => navigate("/")}>
-            {t("productSales.back")}
-          </Button>
           <Box>
             <Typography component="h1" className="bx-page-title" sx={{ mb: "0 !important" }}>
               {t("productSales.title")}

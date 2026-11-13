@@ -36,13 +36,16 @@
   },
   "sidebar": {
     "adminPanel": "Admin Panel",
-    "dashboard": "Boshqaruv paneli",
+    "dashboard": "Bosh sahifa",
     "orderStatus": "Buyurtmalar holati",
     "menu": "Menyu",
     "orders": "Buyurtmalar",
     "tables": "Stollar",
     "users": "Foydalanuvchilar",
-    "dishes": "Taomlar"
+    "dishes": "Taomlar",
+    "kassa": "Kassa",
+    "ordersHistory": "Buyurtmalar tarixi",
+    "reports": "Hisobotlar"
   },
   "topbar": {
     "search": "Qidirish…",
@@ -256,5 +259,18 @@
     "justNow": "hozirgina",
     "minutesAgo": "{{count}} daq oldin",
     "hoursAgo": "{{count}} soat oldin"
+  },
+  "kassa": {
+    "pickTable": "Buyurtmalarni ko'rish uchun chapdan stolni tanlang",
+    "cancelItem": "Taomni bekor qilish",
+    "cancelItemTitle": "Taom bekor qilinsinmi?",
+    "cancelItemConfirm": "Ha, bekor qilish",
+    "keep": "Yo'q",
+    "howMany": "nechtasini bekor qilasiz? (1–{{max}})"
+  },
+  "reports": {
+    "sales": "Sotuv summasi",
+    "completed": "Yakunlangan buyurtmalar",
+    "dishes": "Taomlar bo'yicha"
   }
 }
