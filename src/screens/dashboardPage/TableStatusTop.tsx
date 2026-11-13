@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
 import Swal from "sweetalert2";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { Button, IconButton, Tooltip } from "@mui/material";
@@ -377,7 +376,10 @@ const clock = (iso: string) => {
  * Taomni bekor qilishdan oldin so'raydi. 1 dona bo'lsa — oddiy tasdiq,
  * ko'p bo'lsa — nechtasini bekor qilish so'raladi. Bekor qilinsa `null`.
  */
-async function askCancelQuantity(name: string, max: number, t: TFunction): Promise<number | null> {
+// i18next TFunction turi loyihadagi eski TypeScript bilan noto'g'ri ishlaydi (TS2554) — oddiy tur
+type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
+
+async function askCancelQuantity(name: string, max: number, t: TranslateFn): Promise<number | null> {
   if (max <= 1) {
     const r = await Swal.fire({
       icon: "warning",
